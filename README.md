@@ -3,3 +3,4 @@ Repository for software and methods and publications developed in WP8 under the 
 
 ![SINE logo](images/banner.png)
 
+For more information, please visit the SINE2020 website at https://www.sine2020.eu
