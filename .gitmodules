@@ -1,3 +1,6 @@
 [submodule "code/mcpl"]
 	path = code/mcpl
 	url = https://github.com/mctools/mcpl
+[submodule "code/CombLayer"]
+	path = code/CombLayer
+	url = https://github.com/SAnsell/CombLayer
