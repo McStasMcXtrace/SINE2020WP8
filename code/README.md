@@ -1,8 +1,8 @@
-**mcpl:
+**mcpl:**
 
 submodule corresponding to the repository at https://github.com/mctools/mcpl.
 
-**comblayer:
+**comblayer:**
 
 submodule corresponding to the repositroy https://github.com/SAnsell/CombLayer/
 
