@@ -1,0 +1,1510 @@
+McStas simulation description file for BIFROST_MCPL.
+Date:    Tue Jun 11 11:48:48 2019
+Program: McStas 2.5 - Dec. 12, 2018
+
+begin instrument: BIFROST_MCPL
+  File: BIFROST_losses_20190611_114821/mccode
+  Source: BIFROST_losses.instr
+  Parameters:  MCPL(double) CHOPPERS(double) sector(string) beamline(int) Lmin(double) Lmax(double) c_performance(double) t_performance(double) index(int) dist(double) cold(double) Yheight(double) delta(double) thres(double) filter(double) repeat(double) E_smear(double) pos_smear(double) dir_smear(double) WaveMin(double) WaveMax(double) pin_holeY(double) pin_holeX(double) E_0(double) L_0(double) chopPulseOpening(double) chopPulseFrequencyOrder(double) sampleSizeX(double) sampleSizeY(double) chopBWPos(double) DivSlit0_width(double) DivSlit1_width(double) DivSlit2_width(double) DivSlit3_width(double) BWopen(double) FOCopen1(double) FOCopen2(double) Npulse(double) PscOff(double) discD(double) monigap_length(double) print(int) makeVirtualSource(double) printMValues(int) ROT(double) TX(double) TY(double) TZ(double) Center(double)
+  Trace_enabled: yes
+  Default_main: yes
+  Embedded_runtime: yes
+end instrument
+
+begin simulation: BIFROST_losses_20190611_114821
+  Format: McCode with text headers
+  URL: http://www.mccode.org
+  Creator: McStas 2.5 - Dec. 12, 2018
+  Instrument: BIFROST_losses.instr
+  Ncount: 1000000
+  Trace: no
+  Gravitation: no
+  Seed: 1560250153
+  Directory: BIFROST_losses_20190611_114821
+  Nodes: 8
+  Param: MCPL=1
+  Param: CHOPPERS=0
+  Param: sector=W
+  Param: beamline=3
+  Param: Lmin=0.2
+  Param: Lmax=20
+  Param: c_performance=1
+  Param: t_performance=1
+  Param: index=8
+  Param: dist=0
+  Param: cold=1
+  Param: Yheight=0.03
+  Param: delta=0
+  Param: thres=0.003
+  Param: filter=0
+  Param: repeat=1
+  Param: E_smear=0.1
+  Param: pos_smear=0.01
+  Param: dir_smear=0.01
+  Param: WaveMin=0.1
+  Param: WaveMax=99.5
+  Param: pin_holeY=0.088
+  Param: pin_holeX=0.03
+  Param: E_0=4
+  Param: L_0=0
+  Param: chopPulseOpening=0.004
+  Param: chopPulseFrequencyOrder=14
+  Param: sampleSizeX=0.01
+  Param: sampleSizeY=0.01
+  Param: chopBWPos=78
+  Param: DivSlit0_width=0.1
+  Param: DivSlit1_width=0.1
+  Param: DivSlit2_width=0.1
+  Param: DivSlit3_width=0.1
+  Param: BWopen=172.33
+  Param: FOCopen1=37.79
+  Param: FOCopen2=51.63
+  Param: Npulse=1
+  Param: PscOff=0.0306
+  Param: discD=0.04
+  Param: monigap_length=0.02
+  Param: print=0
+  Param: makeVirtualSource=0
+  Param: printMValues=0
+  Param: ROT=0
+  Param: TX=0
+  Param: TY=0
+  Param: TZ=0
+  Param: Center=0
+end simulation
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(90, 90)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Sphere1
+  position: 0 0 0
+  title: 4PI PSD monitor
+  Ncount: 1395603960
+  filename: nonrotated.dat
+  statistics: X0=89.8748; dX=1.75137; Y0=2.59537; dY=32.4019;
+  signal: Min=0; Max=3.79511e+13; Mean=2.28342e+11;
+  values: 1.84957e+15 5.14728e+12 1.28634e+09
+  xvar: Lo
+  yvar: La
+  xlabel: Longitude [deg]
+  ylabel: Lattitude [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -180 180 -90 90
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(90, 90)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Sphere0
+  position: 0.0585 0 0.0925
+  title: 4PI PSD monitor
+  Ncount: 1395603960
+  filename: rotated.dat
+  statistics: X0=-47.6259; dX=33.7099; Y0=1.16336; dY=1.82992;
+  signal: Min=0; Max=3.86983e+13; Mean=2.28342e+11;
+  values: 1.84957e+15 5.14728e+12 1.28634e+09
+  xvar: Lo
+  yvar: La
+  xlabel: Longitude [deg]
+  ylabel: Lattitude [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -180 180 -90 90
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(51, 41)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: AutoTOFL
+  position: 1.54479 0 1.43076
+  title:  Intensity Time_Of_Flight Wavelength Monitor (Square) per bin
+  Ncount: 1395603960
+  filename: AutoTOFL_1560246528.t_L
+  statistics: X0=0.00267745; dX=0.00131372; Y0=1.94359; dY=1.67202;
+  signal: Min=0; Max=3.30163e+11; Mean=7.45843e+09;
+  values: 1.55956e+13 8.23771e+10 2.21772e+08
+  xvar: TO
+  yvar: Wa
+  xlabel: TOF [s]
+  ylabel: Wavelength [Angs]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 0 0.015 0.1 20
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonCOLD
+  position: 1.54479 0 1.43076
+  title: Mean brilliance
+  Ncount: 1395603960
+  filename: Mean_brillCOLD.dat
+  statistics: X0=3.59749; dX=1.80017;
+  signal: Min=0; Max=5.39872e+13; Mean=5.06184e+12;
+  values: 5.11246e+14 2.42383e+12 3.90336e+07
+  xvar: Mean
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Mean Brilliance
+  xlimits: 0.2 20
+  variables: Mean I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonCOLD
+  position: 1.54479 0 1.43076
+  title: Peak brilliance
+  Ncount: 1395603960
+  filename: Peak_brillCOLD.dat
+  statistics: X0=3.69661; dX=1.90013;
+  signal: Min=0; Max=1.38471e+15; Mean=1.39035e+14;
+  values: 1.40425e+16 4.16385e+14 5.46413e+06
+  xvar: Peak
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Peak Brilliance
+  xlimits: 0.2 20
+  variables: Peak I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(101, 101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonCOLD
+  position: 1.54479 0 1.43076
+  title: TOF-wavelength brilliance
+  Ncount: 1395603960
+  filename: brillCOLD.dat
+  statistics: X0=3654.47; dX=1330.99; Y0=3.59749; dY=1.80017;
+  signal: Min=0; Max=1.37808e+15; Mean=8.81853e+12;
+  values: 8.99578e+16 4.26492e+14 3.90336e+07
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -1000 40000 0.2 20
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonCOLD_COLL
+  position: 1.54479 0 1.43076
+  title: Mean brilliance
+  Ncount: 1395603960
+  filename: Mean_brillCOLD_COLL.dat
+  statistics: X0=3.43931; dX=2.06467;
+  signal: Min=1.37722e+10; Max=2.69267e+13; Mean=3.37998e+12;
+  values: 3.41378e+14 5.86263e+11 4.2661e+06
+  xvar: Mean
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Mean Brilliance
+  xlimits: 0.2 20
+  variables: Mean I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonCOLD_COLL
+  position: 1.54479 0 1.43076
+  title: Peak brilliance
+  Ncount: 1395603960
+  filename: Peak_brillCOLD_COLL.dat
+  statistics: X0=3.51192; dX=2.29748;
+  signal: Min=1.01211e+12; Max=6.89812e+14; Mean=9.19472e+13;
+  values: 9.28666e+15 4.36509e+13 580713
+  xvar: Peak
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Peak Brilliance
+  xlimits: 0.2 20
+  variables: Peak I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(101, 101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonCOLD_COLL
+  position: 1.54479 0 1.43076
+  title: TOF-wavelength brilliance
+  Ncount: 1395603960
+  filename: brillCOLD_COLL.dat
+  statistics: X0=3514.25; dX=1452.77; Y0=3.43931; dY=2.06467;
+  signal: Min=0; Max=6.66022e+14; Mean=6.03568e+12;
+  values: 6.15699e+16 1.05737e+14 4.2661e+06
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 0 40000 0.2 20
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonTHRM
+  position: 1.54479 0 1.43076
+  title: Mean brilliance
+  Ncount: 1395603960
+  filename: Mean_brillTHRM.dat
+  statistics: X0=1.12568; dX=0.47884;
+  signal: Min=0; Max=9.08635e+13; Mean=5.65732e+12;
+  values: 5.7139e+14 4.33738e+12 1.73535e+08
+  xvar: Mean
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Mean Brilliance
+  xlimits: 0.2 20
+  variables: Mean I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonTHRM
+  position: 1.54479 0 1.43076
+  title: Peak brilliance
+  Ncount: 1395603960
+  filename: Peak_brillTHRM.dat
+  statistics: X0=1.0887; dX=0.515021;
+  signal: Min=0; Max=2.52846e+15; Mean=1.72717e+14;
+  values: 1.74444e+16 7.12917e+14 2.41138e+07
+  xvar: Peak
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Peak Brilliance
+  xlimits: 0.2 20
+  variables: Peak I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(101, 101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonTHRM
+  position: 1.54479 0 1.43076
+  title: TOF-wavelength brilliance
+  Ncount: 1395603960
+  filename: brillTHRM.dat
+  statistics: X0=2221.63; dX=939.494; Y0=1.12568; dY=0.47884;
+  signal: Min=0; Max=2.27599e+15; Mean=9.85596e+12;
+  values: 1.00541e+17 7.63197e+14 1.73535e+08
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -1000 40000 0.2 20
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonTHRM_COLL
+  position: 1.54479 0 1.43076
+  title: Mean brilliance
+  Ncount: 1395603960
+  filename: Mean_brillTHRM_COLL.dat
+  statistics: X0=1.62045; dX=1.17609;
+  signal: Min=2.99452e+08; Max=2.91665e+13; Mean=1.98304e+12;
+  values: 2.00287e+14 4.63714e+11 7.71935e+06
+  xvar: Mean
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Mean Brilliance
+  xlimits: 0.2 20
+  variables: Mean I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonTHRM_COLL
+  position: 1.54479 0 1.43076
+  title: Peak brilliance
+  Ncount: 1395603960
+  filename: Peak_brillTHRM_COLL.dat
+  statistics: X0=1.73646; dX=1.54577;
+  signal: Min=5.23264e+10; Max=7.79277e+14; Mean=5.38955e+13;
+  values: 5.44345e+15 3.56148e+13 1.08019e+06
+  xvar: Peak
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Peak Brilliance
+  xlimits: 0.2 20
+  variables: Peak I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(101, 101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: BrillmonTHRM_COLL
+  position: 1.54479 0 1.43076
+  title: TOF-wavelength brilliance
+  Ncount: 1395603960
+  filename: brillTHRM_COLL.dat
+  statistics: X0=2531.71; dX=1124.42; Y0=1.62045; dY=1.17609;
+  signal: Min=0; Max=7.47257e+14; Mean=3.45477e+12;
+  values: 3.52421e+16 8.15942e+13 7.71935e+06
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -1000 40000 0.2 20
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(90, 90)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD0x
+  position: 1.54553 0 1.43143
+  title:  Intensity   Monitor (Square) per bin
+  Ncount: 1395603960
+  filename: flat_x.U1_U2
+  statistics: X0=0.00561887; dX=0.0454369; Y0=0.000187308; dY=0.0162586;
+  signal: Min=326404; Max=8.34183e+09; Mean=1.55676e+09;
+  values: 1.26098e+13 1.27316e+10 9.89851e+07
+  xvar: x
+  yvar: y
+  xlabel: X
+  ylabel: Y
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.08 0.08 -0.08 0.08
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(90, 90)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD1x
+  position: 1.54628 0 1.4321
+  title:  Intensity   Monitor (Square) per bin
+  Ncount: 1395603960
+  filename: flatC_x.U1_U2
+  statistics: X0=0.0226249; dX=0.0423982; Y0=-8.04547e-05; dY=0.0103756;
+  signal: Min=1.81688e-24; Max=5.53709e+09; Mean=5.03055e+08;
+  values: 4.07474e+12 5.08798e+09 1.58649e+07
+  xvar: x
+  yvar: y
+  xlabel: X
+  ylabel: Y
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.08 0.08 -0.08 0.08
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(90, 90)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD2x
+  position: 1.54702 0 1.43277
+  title:  Intensity   Monitor (Square) per bin
+  Ncount: 1395603960
+  filename: flatT_x.U1_U2
+  statistics: X0=-0.00251533; dX=0.0445856; Y0=0.000315504; dY=0.0184117;
+  signal: Min=326404; Max=5.88406e+09; Mean=1.05094e+09;
+  values: 8.51263e+12 1.16572e+10 8.29012e+07
+  xvar: x
+  yvar: y
+  xlabel: X
+  ylabel: Y
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.08 0.08 -0.08 0.08
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monBeforePSC1
+  position: 4.71918 0 4.32962
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monBeforePSC1.dat
+  statistics: X0=3.39145; dX=0.81569;
+  signal: Min=1.51396e+09; Max=9.60695e+09; Mean=4.95551e+09;
+  values: 4.95551e+11 1.61197e+09 2.03583e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 2.2604 5.4112
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFBeforerPSC1
+  position: 4.71919 0 4.32963
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFBeforePSC1.dat
+  statistics: X0=6995.74; dX=3237.84;
+  signal: Min=2.14566e+07; Max=2.94958e+09; Mean=8.24044e+08;
+  values: 8.24044e+11 2.21131e+09 6.92225e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_beforePulseShapping1
+  position: 4.7192 0 4.32963
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_beforePSC1.dat
+  statistics: X0=0.00927224; dX=0.882018; Y0=-0.00801228; dY=1.41709;
+  signal: Min=0; Max=2.96264e+09; Mean=7.84387e+07;
+  values: 7.84387e+11 1.99889e+09 6.72737e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: TofLambdaBeforePSC
+  position: 4.7192 0 4.32964
+  title: TOF-wavelength monitor
+  Ncount: 1395603960
+  filename: TofLambdaBeforePSC1.dat
+  statistics: X0=7260.77; dX=2613.57; Y0=3.4338; dY=1.51594;
+  signal: Min=0; Max=1.7543e+08; Mean=4.45272e+06;
+  values: 4.45272e+10 4.95776e+08 335947
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 0 20000 1.3528 9.04159
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_AfterPulseShapping1
+  position: 4.74175 0 4.35035
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_AfterPSC1.dat
+  statistics: X0=0.0118593; dX=0.869936; Y0=-0.00657522; dY=1.41691;
+  signal: Min=0; Max=3.115e+09; Mean=8.36188e+07;
+  values: 8.36188e+11 2.21871e+09 7.0482e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFInsidePSC
+  position: 4.74176 0 4.35035
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFInsidePSC.dat
+  statistics: X0=7019.03; dX=3248.12;
+  signal: Min=2.49013e+07; Max=2.87152e+09; Mean=8.23912e+08;
+  values: 8.23912e+11 2.21123e+09 6.92115e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: TofLambdaAfterPSC2
+  position: 4.77123 0 4.37741
+  title: TOF-wavelength monitor
+  Ncount: 1395603960
+  filename: TofLambdaAfterPSC2.dat
+  statistics: X0=7351.33; dX=2651.74; Y0=3.4482; dY=1.5195;
+  signal: Min=0; Max=1.60889e+08; Mean=4.71519e+06;
+  values: 4.71519e+10 5.07679e+08 340745
+  xvar: Ti
+  yvar: Wa
+  xlabel: Time-of-flight [\gms]
+  ylabel: Wavelength [AA]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: 0 20000 1.3528 9.04159
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_AfterPSC2
+  position: 4.77123 0 4.37742
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_AfterPSC2.dat
+  statistics: X0=0.0125605; dX=0.866176; Y0=-0.00673077; dY=1.41454;
+  signal: Min=0; Max=3.29734e+09; Mean=8.36188e+07;
+  values: 8.36188e+11 2.21871e+09 7.0482e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFAfterPSC2
+  position: 4.77124 0 4.37743
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFAfterPSC2.dat
+  statistics: X0=7048.25; dX=3259.17;
+  signal: Min=2.70217e+07; Max=2.91945e+09; Mean=8.2366e+08;
+  values: 8.2366e+11 2.21108e+09 6.91966e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monAfterPSC2
+  position: 4.77125 0 4.37743
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monAfterPSC2.dat
+  statistics: X0=3.39145; dX=0.81569;
+  signal: Min=1.51396e+09; Max=9.60695e+09; Mean=4.95551e+09;
+  values: 4.95551e+11 1.61197e+09 2.03583e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 2.2604 5.4112
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monBeforeFOC1
+  position: 6.34973 0 5.82436
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monBeforeFOC1.dat
+  statistics: X0=3.60741; dX=1.57207;
+  signal: Min=4.69526e+08; Max=1.39087e+10; Mean=4.45468e+09;
+  values: 4.45468e+11 1.47578e+09 3.49094e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 1.3528 9.04159
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFBeforeFOC1
+  position: 6.34973 0 5.82437
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFBeforeFOC1.dat
+  statistics: X0=8784.31; dX=3717.51;
+  signal: Min=1.80627e+07; Max=1.55782e+09; Mean=4.90115e+08;
+  values: 4.90115e+11 1.67487e+09 4.6328e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_beforeFOC1
+  position: 6.34974 0 5.82437
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_beforeFOC1.dat
+  statistics: X0=0.00627706; dX=0.857901; Y0=-0.0127727; dY=1.32124;
+  signal: Min=0; Max=2.03561e+09; Mean=5.13805e+07;
+  values: 5.13805e+11 1.69454e+09 4.80855e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_afterFOC1
+  position: 6.3645 0 5.83788
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_afterFOC1.dat
+  statistics: X0=0.00785569; dX=0.858984; Y0=-0.0129059; dY=1.32132;
+  signal: Min=0; Max=2.06265e+09; Mean=5.13805e+07;
+  values: 5.13805e+11 1.69454e+09 4.80855e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFAfterFOC1
+  position: 6.36451 0 5.83789
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFAfterFOC1.dat
+  statistics: X0=8795.99; dX=3719.08;
+  signal: Min=1.80622e+07; Max=1.54863e+09; Mean=4.89904e+08;
+  values: 4.89904e+11 1.67466e+09 4.63197e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monAfterFOC1
+  position: 6.36452 0 5.8379
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monAfterFOC1.dat
+  statistics: X0=3.60741; dX=1.57207;
+  signal: Min=4.69526e+08; Max=1.39087e+10; Mean=4.45468e+09;
+  values: 4.45468e+11 1.47578e+09 3.49094e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 1.3528 9.04159
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monBeforeFOC2
+  position: 11.1099 0 10.1632
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monBeforeFOC2.dat
+  statistics: X0=3.68121; dX=1.60708;
+  signal: Min=3.37973e+08; Max=8.52049e+09; Mean=2.87386e+09;
+  values: 2.87386e+11 1.17247e+09 3.32127e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 1.3528 9.04159
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFBeforeFOC2
+  position: 11.1099 0 10.1632
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFBeforeFOC2.dat
+  statistics: X0=12377.1; dX=3939.11;
+  signal: Min=80537.1; Max=6.23966e+08; Mean=2.49935e+08;
+  values: 2.49935e+11 1.19229e+09 4.08568e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_beforeFOC2
+  position: 11.1099 0 10.1632
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_beforeFOC2.dat
+  statistics: X0=-0.0411038; dX=0.853096; Y0=0.011359; dY=1.33505;
+  signal: Min=0; Max=1.24756e+09; Mean=3.2394e+07;
+  values: 3.2394e+11 1.27997e+09 4.56374e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(100, 100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_afterFOC2
+  position: 11.1247 0 10.1766
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_afterFOC2.dat
+  statistics: X0=-0.0417461; dX=0.853518; Y0=0.0114648; dY=1.335;
+  signal: Min=0; Max=1.25618e+09; Mean=3.2394e+07;
+  values: 3.2394e+11 1.27997e+09 4.56374e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -10 10 -10 10
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFAfterFOC2
+  position: 11.1247 0 10.1766
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFAfterFOC2.dat
+  statistics: X0=12385.2; dX=3939.77;
+  signal: Min=10653.4; Max=6.50178e+08; Mean=2.49734e+08;
+  values: 2.49734e+11 1.19204e+09 4.08444e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 20000
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monAfterFOC2
+  position: 11.1247 0 10.1767
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monAfterFOC2.dat
+  statistics: X0=3.68121; dX=1.60708;
+  signal: Min=3.37973e+08; Max=8.52049e+09; Mean=2.87386e+09;
+  values: 2.87386e+11 1.17247e+09 3.32127e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 1.3528 9.04159
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: E0_100meV24m
+  position: 36.6704 0 33.1191
+  title: Energy [meV] monitor
+  Ncount: 1395603960
+  filename: E0_100meV24m_1560246528.E
+  statistics: X0=10.9736; dX=12.9973;
+  signal: Min=334660; Max=1.75545e+08; Mean=2.12483e+07;
+  values: 2.14608e+09 9.88507e+06 4.14037e+06
+  xvar: E
+  yvar: (I,I_err)
+  xlabel: Energy [meV]
+  ylabel: Intensity [n/s/cm2/bin]
+  xlimits: 0 100
+  variables: E I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monBeforeBWC
+  position: 58.021 0 52.2631
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monBeforeBWC.dat
+  statistics: X0=3.75617; dX=1.62917;
+  signal: Min=2.40587e+08; Max=5.45868e+09; Mean=1.89907e+09;
+  values: 1.89907e+11 9.3641e+08 3.11065e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 1.3528 9.04159
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFBeforeBWC
+  position: 58.021 0 52.2631
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFBeforeBWC.dat
+  statistics: X0=80784.2; dX=49025.8;
+  signal: Min=0; Max=1.73668e+09; Mean=2.09054e+08;
+  values: 2.09054e+11 9.78338e+08 4.26562e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 452537
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(1000)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: ToFAfterBWC
+  position: 58.0359 0 52.2765
+  title: Time-of-flight monitor
+  Ncount: 1395603960
+  filename: ToFAfterBWC.dat
+  statistics: X0=80804.7; dX=49039.7;
+  signal: Min=0; Max=1.71414e+09; Mean=2.09054e+08;
+  values: 2.09054e+11 9.78338e+08 4.2656e+06
+  xvar: t
+  yvar: (I,I_err)
+  xlabel: Time-of-flight [\gms]
+  ylabel: Intensity
+  xlimits: 0 452537
+  variables: t I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: L_monAfterBWC
+  position: 58.036 0 52.2765
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: L_monAfterBWC.dat
+  statistics: X0=3.75617; dX=1.62917;
+  signal: Min=2.40587e+08; Max=5.45868e+09; Mean=1.89907e+09;
+  values: 1.89907e+11 9.3641e+08 3.11065e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 1.3528 9.04159
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(300)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Lmon_guide_end
+  position: 120.151 0 107.971
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: Lmon_guide_end.dat
+  statistics: X0=3.55917; dX=1.5229;
+  signal: Min=1130.86; Max=1.67219e+09; Mean=5.34689e+08;
+  values: 1.60407e+11 8.44857e+08 3.37954e+06
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 0.1 8
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Div2d_sample_B
+  position: 120.575 0 108.352
+  title: Divergence monitor
+  Ncount: 1395603960
+  filename: Div2d_sample_B.dat
+  statistics: X0=-0.00733794; dX=0.381633; Y0=0.01847; dY=0.425316;
+  signal: Min=0; Max=4.83633e+07; Mean=573658;
+  values: 2.29463e+10 3.25349e+08 72088
+  xvar: X 
+  yvar: Y 
+  xlabel: X divergence [deg]
+  ylabel: Y divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.75 0.75 -0.75 0.75
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Div2d_sample
+  position: 120.575 0 108.352
+  title: Divergence monitor
+  Ncount: 1395603960
+  filename: Div2d_sample.dat
+  statistics: X0=-0.00531506; dX=0.525664; Y0=0.00152182; dY=0.601295;
+  signal: Min=0; Max=4.85782e+07; Mean=909963;
+  values: 3.63985e+10 3.85376e+08 203381
+  xvar: X 
+  yvar: Y 
+  xlabel: X divergence [deg]
+  ylabel: Y divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -2.25 2.25 -2.25 2.25
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_sample
+  position: 120.575 0 108.352
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_sample.dat
+  statistics: X0=0.0011073; dX=0.729803; Y0=0.00193679; dY=0.65583;
+  signal: Min=4.94318e-11; Max=6.53942e+07; Mean=3.88538e+06;
+  values: 1.55415e+11 8.36931e+08 1.6285e+06
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -1.5 1.5 -1.5 1.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: HPSD_sample
+  position: 120.575 0 108.352
+  title: Linear PSD monitor
+  Ncount: 1395603960
+  filename: HPSD_sample.dat
+  statistics: X0=2.85671e-05; dX=0.00825931;
+  signal: Min=9.10162e+07; Max=1.63441e+09; Mean=8.69445e+08;
+  values: 8.69445e+10 5.91599e+08 670251
+  xvar: x
+  yvar: (I,I_err)
+  xlabel: x-Position [m]
+  ylabel: Intensity
+  xlimits: -0.02 0.02
+  variables: x I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: VPSD_sample
+  position: 120.575 0 108.352
+  title: Linear PSD (y) monitor
+  Ncount: 1395603960
+  filename: VPSD_sample.dat
+  statistics: X0=8.99013e-05; dX=0.0069487;
+  signal: Min=1.18724e+07; Max=1.68879e+09; Mean=7.04548e+08;
+  values: 7.04548e+10 5.5583e+08 735982
+  xvar: y
+  yvar: (I,I_err)
+  xlabel: y-Position [m]
+  ylabel: Intensity
+  xlimits: -0.02 0.02
+  variables: y I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Hdiv_sample
+  position: 120.575 0 108.352
+  title: horizontal divergence monitor
+  Ncount: 1395603960
+  filename: Hdiv_sample.dat
+  statistics: X0=-0.00529237; dX=0.525617;
+  signal: Min=0; Max=7.1397e+08; Mean=1.81996e+08;
+  values: 3.63992e+10 3.85381e+08 203351
+  xvar: divergence
+  yvar: (I,I_err)
+  xlabel: horizontal divergence [deg]
+  ylabel: Intensity
+  xlimits: -2.25 2.25
+  variables: divergence I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_1d(200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Vdiv_sample
+  position: 120.575 0 108.352
+  title: vertical divergence monitor
+  Ncount: 1395603960
+  filename: Vdiv_sample.dat
+  statistics: X0=0.00151684; dX=0.601286;
+  signal: Min=0; Max=5.51137e+08; Mean=1.81997e+08;
+  values: 3.63994e+10 3.85381e+08 203341
+  xvar: divergence
+  yvar: (I,I_err)
+  xlabel: vertical divergence [deg]
+  ylabel: Intensity
+  xlimits: -2.25 2.25
+  variables: divergence I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: acceptance_x_divx
+  position: 120.575 0 108.352
+  title: Position-divergence monitor
+  Ncount: 1395603960
+  filename: acceptance_x_divx.dat
+  statistics: X0=-3.27032e-05; dX=0.00540253; Y0=-0.00510124; dY=0.50184;
+  signal: Min=0; Max=5.72633e+07; Mean=1.62269e+06;
+  values: 6.49077e+10 5.21891e+08 358052
+  xvar: po
+  yvar: di
+  xlabel: pos [m]
+  ylabel: divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.01 0.01 -1.5 1.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:27 2019 (1560247047)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: acceptance_y_divy
+  position: 120.575 0 108.352
+  title: Position-divergence (y) monitor
+  Ncount: 1395603960
+  filename: acceptance_y_divy.dat
+  statistics: X0=-6.92509e-07; dX=0.00504927; Y0=0.000948853; dY=0.540118;
+  signal: Min=0; Max=6.05329e+07; Mean=1.47486e+06;
+  values: 5.89944e+10 5.04281e+08 386709
+  xvar: po
+  yvar: di
+  xlabel: pos [m]
+  ylabel: divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.01 0.01 -1.5 1.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(300)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Lmon_sample_B
+  position: 120.575 0 108.352
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: Lmon_sample_B.dat
+  statistics: X0=3.33661; dX=1.45807;
+  signal: Min=0; Max=2.9481e+08; Mean=7.37177e+07;
+  values: 2.21153e+10 3.21835e+08 69502
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 0.01 8
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Div2d_sample_maxdiv
+  position: 120.575 0 108.352
+  title: Divergence monitor
+  Ncount: 1395603960
+  filename: Div2d_sample_maxdiv.dat
+  statistics: X0=-0.00535188; dX=0.525587; Y0=0.00137106; dY=0.601266;
+  signal: Min=0; Max=4.85782e+07; Mean=910136;
+  values: 3.64054e+10 3.85447e+08 203314
+  xvar: X 
+  yvar: Y 
+  xlabel: X divergence [deg]
+  ylabel: Y divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -2.25 2.25 -2.25 2.25
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: PSD_sample_maxdiv
+  position: 120.575 0 108.352
+  title: PSD monitor
+  Ncount: 1395603960
+  filename: PSD_sample_maxdiv.dat
+  statistics: X0=0.00305808; dX=0.72534; Y0=0.00463731; dY=0.685897;
+  signal: Min=0; Max=6.46245e+07; Mean=2.7588e+06;
+  values: 1.10352e+11 7.49646e+08 444400
+  xvar: X 
+  yvar: Y 
+  xlabel: X position [cm]
+  ylabel: Y position [cm]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -1.5 1.5 -1.5 1.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: HPSD_sample_maxdiv
+  position: 120.575 0 108.352
+  title: Linear PSD monitor
+  Ncount: 1395603960
+  filename: HPSD_sample_maxdiv.dat
+  statistics: X0=5.78752e-05; dX=0.0078886;
+  signal: Min=4.59196e+06; Max=1.06379e+09; Mean=5.46973e+08;
+  values: 5.46973e+10 5.0282e+08 176074
+  xvar: x
+  yvar: (I,I_err)
+  xlabel: x-Position [m]
+  ylabel: Intensity
+  xlimits: -0.02 0.02
+  variables: x I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(100)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: VPSD_sample_maxdiv
+  position: 120.575 0 108.352
+  title: Linear PSD (y) monitor
+  Ncount: 1395603960
+  filename: VPSD_sample_maxdiv.dat
+  statistics: X0=0.000128031; dX=0.00720235;
+  signal: Min=3.22586e+06; Max=1.10031e+09; Mean=4.90293e+08;
+  values: 4.90293e+10 4.9121e+08 216755
+  xvar: y
+  yvar: (I,I_err)
+  xlabel: y-Position [m]
+  ylabel: Intensity
+  xlimits: -0.02 0.02
+  variables: y I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Hdiv_sample_maxdiv
+  position: 120.575 0 108.352
+  title: horizontal divergence monitor
+  Ncount: 1395603960
+  filename: Hdiv_sample_maxdiv.dat
+  statistics: X0=-0.0105784; dX=0.524987;
+  signal: Min=0; Max=5.69752e+08; Mean=1.36929e+08;
+  values: 2.73858e+10 3.39042e+08 104433
+  xvar: divergence
+  yvar: (I,I_err)
+  xlabel: horizontal divergence [deg]
+  ylabel: Intensity
+  xlimits: -2.25 2.25
+  variables: divergence I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Vdiv_sample_maxdiv
+  position: 120.575 0 108.352
+  title: vertical divergence monitor
+  Ncount: 1395603960
+  filename: Vdiv_sample_maxdiv.dat
+  statistics: X0=0.0063141; dX=0.600557;
+  signal: Min=0; Max=4.75008e+08; Mean=1.52401e+08;
+  values: 3.04802e+10 3.69121e+08 137617
+  xvar: divergence
+  yvar: (I,I_err)
+  xlabel: vertical divergence [deg]
+  ylabel: Intensity
+  xlimits: -2.25 2.25
+  variables: divergence I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: acceptance_x_divx_maxdiv
+  position: 120.575 0 108.352
+  title: Position-divergence monitor
+  Ncount: 1395603960
+  filename: acceptance_x_divx_maxdiv.dat
+  statistics: X0=-3.28299e-05; dX=0.00542559; Y0=-0.00936808; dY=0.500193;
+  signal: Min=0; Max=5.63766e+07; Mean=1.22792e+06;
+  values: 4.91169e+10 4.62964e+08 183796
+  xvar: po
+  yvar: di
+  xlabel: pos [m]
+  ylabel: divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.01 0.01 -1.5 1.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_2d(200, 200)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: acceptance_y_divy_maxdiv
+  position: 120.575 0 108.352
+  title: Position-divergence (y) monitor
+  Ncount: 1395603960
+  filename: acceptance_y_divy_maxdiv.dat
+  statistics: X0=-2.46353e-05; dX=0.00505979; Y0=0.00519974; dY=0.538621;
+  signal: Min=0; Max=5.96206e+07; Mean=1.23742e+06;
+  values: 4.94966e+10 4.80641e+08 260393
+  xvar: po
+  yvar: di
+  xlabel: pos [m]
+  ylabel: divergence [deg]
+  zvar: I
+  zlabel: Signal per bin
+  xylimits: -0.01 0.01 -1.5 1.5
+  variables: I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(400)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Lmon_sample
+  position: 120.575 0 108.352
+  title: Wavelength monitor
+  Ncount: 1395603960
+  filename: Lmon_sample.dat
+  statistics: X0=3.49192; dX=1.00081;
+  signal: Min=9.3262e+06; Max=2.05156e+08; Mean=6.92549e+07;
+  values: 2.77019e+10 3.40386e+08 69438
+  xvar: L
+  yvar: (I,I_err)
+  xlabel: Wavelength [AA]
+  ylabel: Intensity
+  xlimits: 2 6
+  variables: L I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(51)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Elowest
+  position: 120.575 0 108.352
+  title: Energy monitor
+  Ncount: 1395603960
+  filename: E_lowest.dat
+  statistics: X0=0.328048; dX=0.128854;
+  signal: Min=82.0354; Max=2.53937e+07; Mean=6.16854e+06;
+  values: 3.14596e+08 2.73608e+07 3003
+  xvar: E
+  yvar: (I,I_err)
+  xlabel: Energy [meV]
+  ylabel: Intensity
+  xlimits: 0 0.5
+  variables: E I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Elow
+  position: 120.575 0 108.352
+  title: Energy monitor
+  Ncount: 1395603960
+  filename: E_low.dat
+  statistics: X0=10.7382; dX=12.1261;
+  signal: Min=1.61622e+06; Max=2.92208e+09; Mean=3.56887e+08;
+  values: 3.60456e+10 3.83303e+08 190924
+  xvar: E
+  yvar: (I,I_err)
+  xlabel: Energy [meV]
+  ylabel: Intensity
+  xlimits: 0 100
+  variables: E I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(96)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: Ehigh
+  position: 120.575 0 108.352
+  title: Energy monitor
+  Ncount: 1395603960
+  filename: E_high.dat
+  statistics: X0=622.481; dX=57.7779;
+  signal: Min=0; Max=3.61822e+08; Mean=3.77508e+06;
+  values: 3.62408e+08 4.06719e+07 12330
+  xvar: E
+  yvar: (I,I_err)
+  xlabel: Energy [meV]
+  ylabel: Intensity
+  xlimits: 100 100000
+  variables: E I I_err N
+end data
+
+begin data
+  Date: Tue Jun 11 11:57:28 2019 (1560247048)
+  type: array_1d(101)
+  Source: BIFROST_MCPL (BIFROST_losses.instr)
+  component: E0_100meV
+  position: 120.576 0 108.353
+  title: Energy [meV] monitor
+  Ncount: 1395603960
+  filename: E0_100meV_1560246528.E
+  statistics: X0=10.393; dX=12.01;
+  signal: Min=183734; Max=1.44047e+08; Mean=1.69222e+07;
+  values: 1.70914e+09 8.5476e+06 3.32072e+06
+  xvar: E
+  yvar: (I,I_err)
+  xlabel: Energy [meV]
+  ylabel: Intensity [n/s/cm2/bin]
+  xlimits: 0 100
+  variables: E I I_err N
+end data
