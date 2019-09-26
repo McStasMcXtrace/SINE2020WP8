@@ -1,77 +1,24 @@
-/*******************************************************************************
-* Instrument: ESS_butterfly_MCPL_test
-*
-* %I
-* Written by: Peter Willendrup <pkwi@fysik.dtu.dk>
-* Date: 2016-09-26
-* Origin: ESS
-* %INSTRUMENT_SITE: ESS
-*
-* Test instrument for the updated BF1 butterfly moderator design using MCPL input
-*
-* %D
-* Test instrument for the updated BF1 butterfly moderator design using MCPL input files.
-* 
-* The below example gives a 50-50 (statistics-wise) cold/thermal beam at beamline N10.
-* Example: mcrun -n1e6 ESS_butterfly_MCPL_test.instr sector=N beamline=10 cold=0.5
-*
-* Assumes access to binary MCPL datasets in . named [sector][beamline].mcpl.gz, i.e. W8.mcpl.gz.
-*
-* %P
-* sector:        [str]  Defines the 'sector' of your instrument position. Valid values are "N","S","E" and "W"
-* beamline:      [1]    Defines the 'beamline number' of your instrument position. Valid values are 1..10 or 1..11 depending on sector
-* Lmin:          [AA]   Minimum wavelength simulated
-* Lmax:          [AA]   Maximum wavelength simulated
-* c_performance: [1]    Cold brilliance scalar performance multiplicator c_performance > 0
-* t_performance: [1]    Thermal brilliance scalar performance multiplicator t_performance > 0
-* index:         [1]    Target index for source focusing. Defaults to illuminate the "cold collimated" brilliance monitor, thereby suppressing "dist"
-* dist:          [m]    Distance from origin to focusing rectangle; at (0,0,dist) - alternatively use target_index
-* cold:          [1]    Defines the statistical fraction of events emitted from the cold part of the moderator
-* Yheight:       [m]    Defines the moderator height. Valid values are 0.03 m and 0.06 m
-* delta:         [m]    Parameter that allows to scan "collimator" position
-*
-* %L
-* <reference/HTML link>
-* Benchmarking website available at <a href="http://ess_butterfly.mcstas.org">http://ess_butterfly.mcstas.org</a>
-* %E
-*******************************************************************************/
-DEFINE INSTRUMENT BIFROST_MCPL(MCPL=1,CHOPPERS=0,string sector="W",int beamline=4,Lmin=0.2,Lmax=20,c_performance=1,t_performance=1,int index=8,dist=0,cold=1,Yheight=0.03,delta=0,thres=0.003,filter=0,repeat=1,E_smear=0.1,pos_smear=0.01,dir_smear=0.01,
-			       WaveMin=0.1, // Minimum wavelength from moderator
-WaveMax=99.5, // Maximum wavelength from moderator
-pin_holeY = 0.088,   // Height of pinhole at pulse shapping chopper position (0.088 matches guide).
-pin_holeX=0.03,  // Width of pinhole at pulse shapping chopper position (0.03 matches guide).
+DEFINE INSTRUMENT EGCESE(
+WaveMin=1, // Minimum wavelength from moderator
+WaveMax=10, // Maximum wavelength from moderator
 E_0=4.0, // Lowest energy in wavelength band.
 L_0=0, // Alternative: Lowest wavelength in wavelength band
 chopPulseOpening=0.004, // Opening time of pulse shapping chopper [s]
-chopPulseFrequencyOrder=14, // Number of chopper pulses pr moderator pulse. It will automatically be reduced when nesesary and a warning will be written in the promt. 
-sampleSizeX=0.010, // Width of monitors at sample position. Guide optimized for up to 0.015, intruments optimized for 0.001 to 0.01.
-sampleSizeY=0.010, // Height of monitors at sample position. Guide optimized for up to 0.015, intruments optimized for 0.001 to 0.01.
-chopBWPos=78,  // Distance from pulse shapping choppers to BW Chopper
 DivSlit0_width=0.1, // opening of Divergence Slit nr 0
 DivSlit1_width=0.1,  // opening of Divergence Slit nr 1
 DivSlit2_width=0.1,  // opening of Divergence Slit nr 2
 DivSlit3_width=0.1,  // opening of Divergence Slit nr 3
-BWopen=172.33,
-FOCopen1=37.79,
-FOCopen2=51.63,
 Npulse=1,
-PscOff=0.0306,
-discD=0.04,
-monigap_length = 0.02, // Length of the moni-gap
 int print=0, // print values of interest for debugging. McTrace does not work when this is set to 1.
-makeVirtualSource=0, // if 1 print all neutrons to virtual source file 
+int makeVirtualSource=0, // if 1 print all neutrons to virtual source file 
 int printMValues=0,
-ROT=0.0,
-TX=0.0,
-TY=0.0,
-TZ=0.0,
-Center=0)
+double power = 5.0,
+double BWopen=161
+)
 
 DECLARE
 %{
-
-  
-  // M-value and element length arrays
+// M-value and element length arrays
 double elementLength6S[150];
 double mValues6verticalS[150];
 double mValues6horizontalS[150];
@@ -81,6 +28,37 @@ double mValues3horizontalS[150];
 double elementLength1S[150];
 double mValues1verticalS[150];
 double mValues1horizontalS[150];
+
+
+// Transferred parameters
+double chopPulseFrequencyOrder=14; // Number of chopper pulses pr moderator pulse. It will automatically be reduced when nesesary and a warning will be written in the promt. 
+double sampleSizeX=0.010; // Width of monitors at sample position. Guide optimized for up to 0.015, intruments optimized for 0.001 to 0.01.
+double sampleSizeY=0.010; // Height of monitors at sample position. Guide optimized for up to 0.015, intruments optimized for 0.001 to 0.01.
+double chopBWPos=78;  // Distance from pulse shapping choppers to BW Chopper
+double PscOff=0.0306;
+double discD=0.04;
+double monigap_length = 0.02; // Length of the moni-gap
+double FOCopen1=38.26;
+double FOCopen2=52.01;
+
+//Chopper translation parameters adjusting for engineering margins
+
+//The precise values relate to the FOC chopper document, the value 'u' is calculated from the guide width, and
+//the engineering margin is 3 mm
+
+// u for the bunker = 0.00031 
+// u for the traight section = 0.00123 
+
+//Add engineering margin to this and get. 
+
+double ChopTransBunker=0.00331; //To accomodate floor deformations in the bunker
+double ChopTransE2=0.00423; //To accomodate floor deformations in the E02 hall (piles)
+
+
+
+
+
+
 
 double x_div;
 double y_div;
@@ -179,62 +157,12 @@ double chopFrameOverlap2Pos= 14.973;    // Distance from moderator to second fra
 double benderAngle = 0.01886551; // Mads numbers = 0.0183513513514;
 
 int i;   
-
-  
-  int IsCold;
-  double SrcX, SrcY, SrcZ;
-  double Theta;
-  double MonTransl;
-  double XW, YH;
-  char options1[256],options2[256],options3[256],options4[256];
-  char srcdef[128];
-  double WidthC=0.072,WidthT=0.108;
-  double WL;
-  double lambdamin, lambdamax;
-  double CCold,CThermal;
-  double SurfSign;
-  double TCollmin;
-  double TCollmax;
-  double Emin,Emax;
-  double EminTh=20, EmaxTh=100, EminC=0, EmaxC=20;
-  double Eneutron;
-  /* 10 beamlines in sector N and E  - plus one location added for drawing */
-  double iBeamlinesN[] = { 30.0,  36.0,  42.0,  48.0,  54.0,  60.0,  66.0,  72.0,  78.0,  84.0,  90.0};
-  double iBeamlinesE[] = {-30.0, -36.0, -42.0, -48.0, -54.0, -60.0, -66.0, -72.0, -78.0, -84.0, -90.0};
-  /* 11 beamlines in sector S and W - plus one location added for drawing */
-  double iBeamlinesW[] = { 150.0,  144.7,  138.0,  132.7,  126.0,  120.7,  114.0,  108.7,  102.0,  96.7,  90.0,  84.0};
-  double iBeamlinesS[] = {-150.0, -144.7, -138.0, -132.7, -126.0, -120.7, -114.0, -108.7, -102.0, -96.7, -90.0, -84.0};
-  double* iBeamlines;
-  double ANGLE;
-  double DeltaX,DeltaZ;
-  char MCPLfile[128];
-  double T0,L0;
-
-  double calcAlpha(double length, double radius) {
-    // calculate angle of arm after curved guide
-    return RAD2DEG * length/radius;
-  }	
-  
-  double calcX(double length, double radius) {
-    // calculate position and angle of arm after curved guide
-    double alpha = DEG2RAD * calcAlpha(length, radius);
-    return radius*(1.0-cos(alpha));
-  }	
-  
-  double calcZ(double length, double radius) {
-    // calculate position and angle of arm after curved guide
-    double alpha = DEG2RAD * calcAlpha(length, radius);
-    return radius*sin(alpha);
-  }
-
-  double ParticleEnergy;
-  
 %}
 
 INITIALIZE
 %{
 
-  
+
 // If there is set a value of L_0, overwrite E_0 and calculate E_0 from L_0 
 if (L_0>0){
 	E_0=81.82/(L_0*L_0);
@@ -247,231 +175,230 @@ if (L_0>0){
 
  //// Part 1 //// 
  elementLength1_part_1[0] = 0.50000; 
- mValues1vertical_part_1[0] = 10;//.50; 
- mValues1horizontal_part_1[0] = 10;//.50;
+ mValues1vertical_part_1[0] = 1.50; 
+ mValues1horizontal_part_1[0] = 1.50;
 
  elementLength1_part_1[1] = 0.50000; 
- mValues1vertical_part_1[1] = 10;//1.50; 
- mValues1horizontal_part_1[1] = 10;//1.50;
+ mValues1vertical_part_1[1] = 1.50; 
+ mValues1horizontal_part_1[1] = 1.50;
 
  elementLength1_part_1[2] = 0.50000; 
- mValues1vertical_part_1[2] = 10;//1.50; 
- mValues1horizontal_part_1[2] = 10;//1.50;
+ mValues1vertical_part_1[2] = 1.50; 
+ mValues1horizontal_part_1[2] = 1.50;
 
  elementLength1_part_1[3] = 0.50000; 
- mValues1vertical_part_1[3] = 10;//1.50; 
- mValues1horizontal_part_1[3] = 10;//1.50;
+ mValues1vertical_part_1[3] = 1.50; 
+ mValues1horizontal_part_1[3] = 1.50;
 
  elementLength1_part_1[4] = 0.50000; 
- mValues1vertical_part_1[4] = 10;//1.50; 
- mValues1horizontal_part_1[4] = 10;//1.50;
+ mValues1vertical_part_1[4] = 1.50; 
+ mValues1horizontal_part_1[4] = 1.50;
 
  elementLength1_part_1[5] = 0.50000; 
- mValues1vertical_part_1[5] = 10;//1.50; 
- mValues1horizontal_part_1[5] = 10;//1.50;
+ mValues1vertical_part_1[5] = 1.50; 
+ mValues1horizontal_part_1[5] = 1.50;
 
  elementLength1_part_1[6] = 0.50000; 
- mValues1vertical_part_1[6] = 10;//1.50; 
- mValues1horizontal_part_1[6] = 10;//1.50;
+ mValues1vertical_part_1[6] = 1.50; 
+ mValues1horizontal_part_1[6] = 1.50;
 
  elementLength1_part_1[7] = 0.50000; 
- mValues1vertical_part_1[7] = 10;//1.50; 
- mValues1horizontal_part_1[7] = 10;//1.50;
+ mValues1vertical_part_1[7] = 1.50; 
+ mValues1horizontal_part_1[7] = 1.50;
 
  elementLength1_part_1[8] = 0.50000; 
- mValues1vertical_part_1[8] = 10;//1.50; 
- mValues1horizontal_part_1[8] = 10;//1.50;
+ mValues1vertical_part_1[8] = 1.50; 
+ mValues1horizontal_part_1[8] = 1.50;
 
  elementLength1_part_1[9] = 0.50000; 
- mValues1vertical_part_1[9] = 10;//1.50; 
- mValues1horizontal_part_1[9] = 10;//1.50;
+ mValues1vertical_part_1[9] = 1.50; 
+ mValues1horizontal_part_1[9] = 1.50;
 
  elementLength1_part_1[10] = 0.50000; 
- mValues1vertical_part_1[10] = 10;//1.50; 
- mValues1horizontal_part_1[10] = 10;//1.50;
+ mValues1vertical_part_1[10] = 1.50; 
+ mValues1horizontal_part_1[10] = 1.50;
 
  elementLength1_part_1[11] = 0.50000; 
- mValues1vertical_part_1[11] = 10;//1.50; 
- mValues1horizontal_part_1[11] = 10;//1.50;
+ mValues1vertical_part_1[11] = 1.50; 
+ mValues1horizontal_part_1[11] = 1.50;
 
  elementLength1_part_1[12] = 0.50000; 
- mValues1vertical_part_1[12] = 10;//1.50; 
- mValues1horizontal_part_1[12] = 10;//1.50;
+ mValues1vertical_part_1[12] = 1.50; 
+ mValues1horizontal_part_1[12] = 1.50;
 
  elementLength1_part_1[13] = 0.50000; 
- mValues1vertical_part_1[13] = 10;//1.50; 
- mValues1horizontal_part_1[13] = 10;//1.50;
+ mValues1vertical_part_1[13] = 1.50; 
+ mValues1horizontal_part_1[13] = 1.50;
 
  elementLength1_part_1[14] = 0.50000; 
- mValues1vertical_part_1[14] = 10;//1.50; 
- mValues1horizontal_part_1[14] = 10;//1.50;
+ mValues1vertical_part_1[14] = 1.50; 
+ mValues1horizontal_part_1[14] = 1.50;
 
  elementLength1_part_1[15] = 0.50000; 
- mValues1vertical_part_1[15] = 10;//1.50; 
- mValues1horizontal_part_1[15] = 10;//1.50;
+ mValues1vertical_part_1[15] = 1.50; 
+ mValues1horizontal_part_1[15] = 1.50;
 
  elementLength1_part_1[16] = 0.50000; 
- mValues1vertical_part_1[16] = 10;//1.50; 
- mValues1horizontal_part_1[16] = 10;//1.50;
+ mValues1vertical_part_1[16] = 1.50; 
+ mValues1horizontal_part_1[16] = 1.50;
 
  elementLength1_part_1[17] = 0.50000; 
- mValues1vertical_part_1[17] = 10;//1.50; 
- mValues1horizontal_part_1[17] = 10;//1.50;
+ mValues1vertical_part_1[17] = 1.50; 
+ mValues1horizontal_part_1[17] = 1.50;
 
  elementLength1_part_1[18] = 0.50000; 
- mValues1vertical_part_1[18] = 10;//1.50; 
- mValues1horizontal_part_1[18] = 10;//1.50;
+ mValues1vertical_part_1[18] = 1.50; 
+ mValues1horizontal_part_1[18] = 1.50;
 
- elementLength1_part_1[19] = 0.50000; 
- mValues1vertical_part_1[19] = 10;//1.50; 
- mValues1horizontal_part_1[19] = 10;//1.50;
+ elementLength1_part_1[19] = 0.50000; // Raised vert to 2
+ mValues1vertical_part_1[19] =  1.50; 
+ mValues1horizontal_part_1[19] = 1.50;
 
  elementLength1_part_1[20] = 0.50000; 
- mValues1vertical_part_1[20] = 10;//1.50; 
- mValues1horizontal_part_1[20] = 10;//1.50;
+ mValues1vertical_part_1[20] =  1.50; 
+ mValues1horizontal_part_1[20] = 1.50;
 
  elementLength1_part_1[21] = 0.50000; 
- mValues1vertical_part_1[21] = 10;//1.50; 
- mValues1horizontal_part_1[21] = 10;//1.50;
+ mValues1vertical_part_1[21] =  1.50; 
+ mValues1horizontal_part_1[21] = 1.50;
 
- elementLength1_part_1[22] = 0.50000; 
- mValues1vertical_part_1[22] = 10;//2.00; 
- mValues1horizontal_part_1[22] = 10;//1.50;
+ elementLength1_part_1[22] = 0.50000; // h=2 v=1.5
+ mValues1vertical_part_1[22] =  2.00; 
+ mValues1horizontal_part_1[22] = 1.5;
 
  elementLength1_part_1[23] = 0.50000; 
- mValues1vertical_part_1[23] = 10;//2.00; 
- mValues1horizontal_part_1[23] = 10;//1.50;
+ mValues1vertical_part_1[23] =  2.00; 
+ mValues1horizontal_part_1[23] = 1.5;
 
  elementLength1_part_1[24] = 0.50000; 
- mValues1vertical_part_1[24] = 10;//2.00; 
- mValues1horizontal_part_1[24] = 10;//1.50;
+ mValues1vertical_part_1[24] =  2.00; 
+ mValues1horizontal_part_1[24] = 1.5;
 
  elementLength1_part_1[25] = 0.50000; 
- mValues1vertical_part_1[25] = 10;//2.00; 
- mValues1horizontal_part_1[25] = 10;//1.50;
+ mValues1vertical_part_1[25] =  2.00; 
+ mValues1horizontal_part_1[25] = 1.5;
 
  elementLength1_part_1[26] = 0.50000; 
- mValues1vertical_part_1[26] = 10;//2.00; 
- mValues1horizontal_part_1[26] = 10;//1.50;
+ mValues1vertical_part_1[26] =  2.00; 
+ mValues1horizontal_part_1[26] = 1.5;
 
  elementLength1_part_1[27] = 0.50000; 
- mValues1vertical_part_1[27] = 10;//2.00; 
- mValues1horizontal_part_1[27] = 10;//1.50;
+ mValues1vertical_part_1[27] =  2.00; 
+ mValues1horizontal_part_1[27] = 1.5;
 
  elementLength1_part_1[28] = 0.50000; 
- mValues1vertical_part_1[28] = 10;//2.00; 
- mValues1horizontal_part_1[28] = 10;//1.50;
+ mValues1vertical_part_1[28] =  2.00; 
+ mValues1horizontal_part_1[28] = 1.5;
 
  elementLength1_part_1[29] = 0.50000; 
- mValues1vertical_part_1[29] = 10;//2.00; 
- mValues1horizontal_part_1[29] = 10;//1.50;
+ mValues1vertical_part_1[29] = 2.00; 
+ mValues1horizontal_part_1[29] = 1.5;
 
  elementLength1_part_1[30] = 0.50000; 
- mValues1vertical_part_1[30] = 10;//2.00; 
- mValues1horizontal_part_1[30] = 10;//1.50;
+ mValues1vertical_part_1[30] = 2.00; 
+ mValues1horizontal_part_1[30] = 1.5;
 
  elementLength1_part_1[31] = 0.50000; 
- mValues1vertical_part_1[31] = 10;//2.00; 
- mValues1horizontal_part_1[31] = 10;//1.50;
+ mValues1vertical_part_1[31] = 2.00; 
+ mValues1horizontal_part_1[31] = 1.5; //
 
  elementLength1_part_1[32] = 0.50000; 
- mValues1vertical_part_1[32] = 10;//2.00; 
- mValues1horizontal_part_1[32] = 10;//2.00;
+ mValues1vertical_part_1[32] = 2.00; 
+ mValues1horizontal_part_1[32] = 2.00;
 
  elementLength1_part_1[33] = 0.50000; 
- mValues1vertical_part_1[33] = 10;//2.00; 
- mValues1horizontal_part_1[33] = 10;//2.00;
+ mValues1vertical_part_1[33] = 2.00; 
+ mValues1horizontal_part_1[33] = 2.00;
 
  elementLength1_part_1[34] = 0.50000; 
- mValues1vertical_part_1[34] = 10;//2.00; 
- mValues1horizontal_part_1[34] = 10;//2.00;
+ mValues1vertical_part_1[34] = 2.00; 
+ mValues1horizontal_part_1[34] = 2.00;
 
  elementLength1_part_1[35] = 0.50000; 
- mValues1vertical_part_1[35] = 10;//2.00; 
- mValues1horizontal_part_1[35] = 10;//2.00;
+ mValues1vertical_part_1[35] = 2.00; 
+ mValues1horizontal_part_1[35] = 2.00;
 
  elementLength1_part_1[36] = 0.01580;  // Gap 
- mValues1vertical_part_1[36] = 10;//0.00; 
- mValues1horizontal_part_1[36] = 10;//0.00;
+ mValues1vertical_part_1[36] = 0.00; 
+ mValues1horizontal_part_1[36] = 0.00;
 
  elementLength1_part_1[37] = 0.48420; 
- mValues1vertical_part_1[37] = 10;//2.00; 
- mValues1horizontal_part_1[37] = 10;//2.00;
+ mValues1vertical_part_1[37] = 2.00; 
+ mValues1horizontal_part_1[37] = 2.00;
 
  elementLength1_part_1[38] = 0.50000; 
- mValues1vertical_part_1[38] = 10;//2.00; 
- mValues1horizontal_part_1[38] = 10;//2.50;
+ mValues1vertical_part_1[38] = 2.50; 
+ mValues1horizontal_part_1[38] = 2.5;
 
  elementLength1_part_1[39] = 0.50000; 
- mValues1vertical_part_1[39] = 10;//2.50; 
- mValues1horizontal_part_1[39] = 10;//2.50;
+ mValues1vertical_part_1[39] = 2.50; 
+ mValues1horizontal_part_1[39] = 2.50;
 
  elementLength1_part_1[40] = 0.14320; 
- mValues1vertical_part_1[40] = 10;//2.50; 
- mValues1horizontal_part_1[40] = 10;//2.50;
+ mValues1vertical_part_1[40] = 2.50; 
+ mValues1horizontal_part_1[40] = 2.50;
 
  
  //// Part 2 //// 
- elementLength1_part_2[0] = 0.31680; 
- mValues1vertical_part_2[0] = 10;//2.50; 
- mValues1horizontal_part_2[0] = 10;//2.50;
+ elementLength1_part_2[0] = 0.31680;  // changed from 2.5 / 2.5
+ mValues1vertical_part_2[0] = 3.00; 
+ mValues1horizontal_part_2[0] = 3.00;
 
  elementLength1_part_2[1] = 0.50000; 
- mValues1vertical_part_2[1] = 10;//3.00; 
- mValues1horizontal_part_2[1] = 10;//3.00;
+ mValues1vertical_part_2[1] = 3.00; 
+ mValues1horizontal_part_2[1] = 3.00;
 
  elementLength1_part_2[2] = 0.46320; 
- mValues1vertical_part_2[2] = 10;//3.00; 
- mValues1horizontal_part_2[2] =10;// 3.00;
+ mValues1vertical_part_2[2] = 3.00; 
+ mValues1horizontal_part_2[2] = 3.00;
 
  
  //// Part 3 //// 
  elementLength1_part_3[0] = 0.0596; 
- mValues1vertical_part_3[0] = 10;//3.00; 
- mValues1horizontal_part_3[0] = 10;//3.00;
+ mValues1vertical_part_3[0] = 3.00; 
+ mValues1horizontal_part_3[0] = 3.00;
 
  elementLength1_part_3[1] = 0.500; 
- mValues1vertical_part_3[1] = 10;//3.50; 
- mValues1horizontal_part_3[1] = 10;//3.00;
+ mValues1vertical_part_3[1] = 3.00; 
+ mValues1horizontal_part_3[1] = 3.50;
 
  
  //// Part 4 //// 
  elementLength1_part_4[0] = 0.06670 ; 
- mValues1vertical_part_4[0] = 10;//3.50; 
- mValues1horizontal_part_4[0] = 10;//3.00;
+ mValues1vertical_part_4[0] = 3.00; 
+ mValues1horizontal_part_4[0] = 3.50;
 
  elementLength1_part_4[1] = 0.50000; 
- mValues1vertical_part_4[1] = 10;//3.50; 
- mValues1horizontal_part_4[1] = 10;//3.5;
+ mValues1vertical_part_4[1] = 3.50; 
+ mValues1horizontal_part_4[1] = 3.5;
 
 // A bit extra due to mismatch in coating lengths after rounding element length to 0.5 meters:
 // 0.47 cm of this is applied in last tested version (sep 12 2018)
  elementLength1_part_4[2] = 0.0047;  
- mValues1vertical_part_4[2] = 10;//3.50; 
- mValues1horizontal_part_4[2] = 10;//3.5;
-
+ mValues1vertical_part_4[2] = 3.50; 
+ mValues1horizontal_part_4[2] = 3.5;
 
 elementLength3S[0]=0.50;
-mValues3verticalS[0]=10;//2.000000;
-mValues3horizontalS[0]=10;//2.500000;
+mValues3verticalS[0]=2.000000;
+mValues3horizontalS[0]=2.500000;
 elementLength3S[1]=0.50;
-mValues3verticalS[1]=10;//2.000000;
-mValues3horizontalS[1]=10;//2.500000;
+mValues3verticalS[1]=2.000000;
+mValues3horizontalS[1]=2.500000;
 elementLength3S[2]=0.50;
-mValues3verticalS[2]=10;//2.000000;
-mValues3horizontalS[2]=10;//2.500000;
+mValues3verticalS[2]=2.000000;
+mValues3horizontalS[2]=2.500000;
 elementLength3S[3]=0.50;
-mValues3verticalS[3]=10;//2.000000;
-mValues3horizontalS[3]=10;//2.500000;
+mValues3verticalS[3]=2.000000;
+mValues3horizontalS[3]=2.500000;
 elementLength3S[4]=0.50;
-mValues3verticalS[4]=10;//2.000000;
-mValues3horizontalS[4]=10;//2.500000;
+mValues3verticalS[4]=2.000000;
+mValues3horizontalS[4]=2.500000;
 elementLength3S[5]=0.50;
-mValues3verticalS[5]=10;//2.000000;
-mValues3horizontalS[5]=10;//2.500000;
+mValues3verticalS[5]=2.000000;
+mValues3horizontalS[5]=2.500000;
 elementLength3S[6]=0.50;
-mValues3verticalS[6]=10;//2.000000;
-mValues3horizontalS[6]=10;//2.500000;
+mValues3verticalS[6]=2.000000;
+mValues3horizontalS[6]=2.500000;
 
 // Moni gap
 elementLength3S[7]=monigap_length;
@@ -480,181 +407,181 @@ mValues3horizontalS[7]=0;
 
 
 elementLength3S[7+1]=0.50-monigap_length;
-mValues3verticalS[7+1]=10;//2.000000;
-mValues3horizontalS[7+1]=10;//2.000000;
+mValues3verticalS[7+1]=2.000000;
+mValues3horizontalS[7+1]=2.000000;
 elementLength3S[8+1]=0.50;
-mValues3verticalS[8+1]=10;//2.000000;
-mValues3horizontalS[8+1]=10;//2.000000;
+mValues3verticalS[8+1]=2.000000;
+mValues3horizontalS[8+1]=2.000000;
 elementLength3S[9+1]=0.50;
-mValues3verticalS[9+1]=10;//2.000000;
-mValues3horizontalS[9+1]=10;//2.000000;
+mValues3verticalS[9+1]=2.000000;
+mValues3horizontalS[9+1]=2.000000;
 elementLength3S[10+1]=0.50;
-mValues3verticalS[10+1]=10;//2.000000;
-mValues3horizontalS[10+1]=10;//2.000000;
+mValues3verticalS[10+1]=2.000000;
+mValues3horizontalS[10+1]=2.000000;
 elementLength3S[11+1]=0.50;
-mValues3verticalS[11+1]=10;//2.000000;
-mValues3horizontalS[11+1]=10;//2.000000;
+mValues3verticalS[11+1]=2.000000;
+mValues3horizontalS[11+1]=2.000000;
 elementLength3S[12+1]=0.50;
-mValues3verticalS[12+1]=10;//2.000000;
-mValues3horizontalS[12+1]=10;//2.000000;
+mValues3verticalS[12+1]=2.000000;
+mValues3horizontalS[12+1]=2.000000;
 elementLength3S[13+1]=0.50;
-mValues3verticalS[13+1]=10;//1.500000;
-mValues3horizontalS[13+1]=10;//2.000000;
+mValues3verticalS[13+1]=1.500000;
+mValues3horizontalS[13+1]=2.000000;
 elementLength3S[14+1]=0.50;
-mValues3verticalS[14+1]=10;//1.500000;
-mValues3horizontalS[14+1]=10;//2.000000;
+mValues3verticalS[14+1]=1.500000;
+mValues3horizontalS[14+1]=2.000000;
 elementLength3S[15+1]=0.50;
-mValues3verticalS[15+1]=10;//1.500000;
-mValues3horizontalS[15+1]=10;//2.000000;
+mValues3verticalS[15+1]=1.500000;
+mValues3horizontalS[15+1]=2.000000;
 elementLength3S[16+1]=0.50;
-mValues3verticalS[16+1]=10;//1.500000;
-mValues3horizontalS[16+1]=10;//2.000000;
+mValues3verticalS[16+1]=1.500000;
+mValues3horizontalS[16+1]=2.000000;
 elementLength3S[17+1]=0.50;
-mValues3verticalS[17+1]=10;//1.500000;
-mValues3horizontalS[17+1]=10;//2.000000;
+mValues3verticalS[17+1]=1.500000;
+mValues3horizontalS[17+1]=2.000000;
 elementLength3S[18+1]=0.50;
-mValues3verticalS[18+1]=10;//1.500000;
-mValues3horizontalS[18+1]=10;//2.000000;
+mValues3verticalS[18+1]=1.500000;
+mValues3horizontalS[18+1]=2.000000;
 elementLength3S[19+1]=0.50;
-mValues3verticalS[19+1]=10;//1.500000;
-mValues3horizontalS[19+1]=10;//2.000000;
+mValues3verticalS[19+1]=1.500000;
+mValues3horizontalS[19+1]=2.000000;
 elementLength3S[20+1]=0.50;
-mValues3verticalS[20+1]=10;//1.500000;
-mValues3horizontalS[20+1]=10;//2.000000;
+mValues3verticalS[20+1]=1.500000;
+mValues3horizontalS[20+1]=2.000000;
 elementLength3S[21+1]=0.50;
-mValues3verticalS[21+1]=10;//1.500000;
-mValues3horizontalS[21+1]=10;//2.000000;
+mValues3verticalS[21+1]=1.500000;
+mValues3horizontalS[21+1]=2.000000;
 elementLength3S[22+1]=0.50;
-mValues3verticalS[22+1]=10;//1.500000;
-mValues3horizontalS[22+1]=10;//2.000000;
+mValues3verticalS[22+1]=1.500000;
+mValues3horizontalS[22+1]=2.000000;
 elementLength3S[23+1]=0.50;
-mValues3verticalS[23+1]=10;//1.500000;
-mValues3horizontalS[23+1]=10;//1.500000;
+mValues3verticalS[23+1]=1.500000;
+mValues3horizontalS[23+1]=1.500000;
 elementLength3S[24+1]=0.50;
-mValues3verticalS[24+1]=10;//1.500000;
-mValues3horizontalS[24+1]=10;//1.500000;
+mValues3verticalS[24+1]=1.500000;
+mValues3horizontalS[24+1]=1.500000;
 elementLength3S[25+1]=0.50;
-mValues3verticalS[25+1]=10;//1.500000;
-mValues3horizontalS[25+1]=10;//1.500000;
+mValues3verticalS[25+1]=1.500000;
+mValues3horizontalS[25+1]=1.500000;
 elementLength3S[26+1]=0.50;
-mValues3verticalS[26+1]=10;//1.500000;
-mValues3horizontalS[26+1]=10;//1.500000;
+mValues3verticalS[26+1]=1.500000;
+mValues3horizontalS[26+1]=1.500000;
 elementLength3S[27+1]=0.50;
-mValues3verticalS[27+1]=10;//1.500000;
-mValues3horizontalS[27+1]=10;//1.500000;
+mValues3verticalS[27+1]=1.500000;
+mValues3horizontalS[27+1]=1.500000;
 elementLength3S[28+1]=0.50;
-mValues3verticalS[28+1]=10;//1.500000;
-mValues3horizontalS[28+1]=10;//1.500000;
+mValues3verticalS[28+1]=1.500000;
+mValues3horizontalS[28+1]=1.500000;
 elementLength3S[29+1]=0.50;
-mValues3verticalS[29+1]=10;//1.500000;
-mValues3horizontalS[29+1]=10;//1.500000;
+mValues3verticalS[29+1]=1.500000;
+mValues3horizontalS[29+1]=1.500000;
 elementLength3S[30+1]=0.50;
-mValues3verticalS[30+1]=10;//1.500000;
-mValues3horizontalS[30+1]=10;//1.500000;
+mValues3verticalS[30+1]=1.500000;
+mValues3horizontalS[30+1]=1.500000;
 elementLength3S[31+1]=0.50;
-mValues3verticalS[31+1]=10;//1.500000;
-mValues3horizontalS[31+1]=10;//1.500000;
+mValues3verticalS[31+1]=1.500000;
+mValues3horizontalS[31+1]=1.500000;
 elementLength3S[32+1]=0.50;
-mValues3verticalS[32+1]=10;//1.500000;
-mValues3horizontalS[32+1]=10;//1.500000;
+mValues3verticalS[32+1]=1.500000;
+mValues3horizontalS[32+1]=1.500000;
 elementLength3S[33+1]=0.50;
-mValues3verticalS[33+1]=10;//1.500000;
-mValues3horizontalS[33+1]=10;//1.500000;
+mValues3verticalS[33+1]=1.500000;
+mValues3horizontalS[33+1]=1.500000;
 elementLength3S[34+1]=0.50;
-mValues3verticalS[34+1]=10;//1.500000;
-mValues3horizontalS[34+1]=10;//1.500000;
+mValues3verticalS[34+1]=1.500000;
+mValues3horizontalS[34+1]=1.500000;
 elementLength3S[35+1]=0.50;
-mValues3verticalS[35+1]=10;//1.500000;
-mValues3horizontalS[35+1]=10;//1.500000;
+mValues3verticalS[35+1]=1.500000;
+mValues3horizontalS[35+1]=1.500000;
 elementLength3S[36+1]=0.50;
-mValues3verticalS[36+1]=10;//1.500000;
-mValues3horizontalS[36+1]=10;//1.500000;
+mValues3verticalS[36+1]=1.500000;
+mValues3horizontalS[36+1]=1.500000;
 elementLength3S[37+1]=0.50;
-mValues3verticalS[37+1]=10;//1.500000;
-mValues3horizontalS[37+1]=10;//1.500000;
+mValues3verticalS[37+1]=1.500000;
+mValues3horizontalS[37+1]=1.500000;
 elementLength3S[38+1]=0.50;
-mValues3verticalS[38+1]=10;//1.500000;
-mValues3horizontalS[38+1]=10;//1.500000;
+mValues3verticalS[38+1]=1.500000;
+mValues3horizontalS[38+1]=1.500000;
 elementLength3S[39+1]=0.50;
-mValues3verticalS[39+1]=10;//1.500000;
-mValues3horizontalS[39+1]=10;//1.500000;
+mValues3verticalS[39+1]=1.500000;
+mValues3horizontalS[39+1]=1.500000;
 elementLength3S[40+1]=0.50;
-mValues3verticalS[40+1]=10;//1.500000;
-mValues3horizontalS[40+1]=10;//1.500000;
+mValues3verticalS[40+1]=1.500000;
+mValues3horizontalS[40+1]=1.500000;
 elementLength3S[41+1]=0.50;
-mValues3verticalS[41+1]=10;//1.500000;
-mValues3horizontalS[41+1]=10;//1.500000;
+mValues3verticalS[41+1]=1.500000;
+mValues3horizontalS[41+1]=1.500000;
 elementLength3S[42+1]=0.50;
-mValues3verticalS[42+1]=10;//1.500000;
-mValues3horizontalS[42+1]=10;//1.500000;
+mValues3verticalS[42+1]=1.500000;
+mValues3horizontalS[42+1]=1.500000;
 elementLength3S[43+1]=0.50;
-mValues3verticalS[43+1]=10;//1.500000;
-mValues3horizontalS[43+1]=10;//1.500000;
+mValues3verticalS[43+1]=1.500000;
+mValues3horizontalS[43+1]=1.500000;
 elementLength3S[44+1]=0.50;
-mValues3verticalS[44+1]=10;//1.500000;
-mValues3horizontalS[44+1]=10;//1.500000;
+mValues3verticalS[44+1]=1.500000;
+mValues3horizontalS[44+1]=1.500000;
 elementLength3S[45+1]=0.50;
-mValues3verticalS[45+1]=10;//1.500000;
-mValues3horizontalS[45+1]=10;//1.500000;
+mValues3verticalS[45+1]=1.500000;
+mValues3horizontalS[45+1]=1.500000;
 elementLength3S[46+1]=0.50;
-mValues3verticalS[46+1]=10;//1.500000;
-mValues3horizontalS[46+1]=10;//1.500000;
+mValues3verticalS[46+1]=1.500000;
+mValues3horizontalS[46+1]=1.500000;
 elementLength3S[47+1]=0.50;
-mValues3verticalS[47+1]=10;//1.500000;
-mValues3horizontalS[47+1]=10;//1.500000;
+mValues3verticalS[47+1]=1.500000;
+mValues3horizontalS[47+1]=1.500000;
 elementLength3S[48+1]=0.50;
-mValues3verticalS[48+1]=10;//1.500000;
-mValues3horizontalS[48+1]=10;//1.500000;
+mValues3verticalS[48+1]=1.500000;
+mValues3horizontalS[48+1]=1.500000;
 elementLength3S[49+1]=0.50 - 0.0712; // Slightly shorter segment last
-mValues3verticalS[49+1]=10;//1.500000;
-mValues3horizontalS[49+1]=10;//1.500000;
+mValues3verticalS[49+1]=1.500000;
+mValues3horizontalS[49+1]=1.500000;
 
 
 elementLength6S[0]=0.488444444444444;
-mValues6verticalS[0]=10;//3.500000;
-mValues6horizontalS[0]=10;//3.000000;
+mValues6verticalS[0]=3.500000;
+mValues6horizontalS[0]=3.000000;
 elementLength6S[1]=0.488444444444444;
-mValues6verticalS[1]=10;//3.500000;
-mValues6horizontalS[1]=10;//3.000000;
+mValues6verticalS[1]=3.500000;
+mValues6horizontalS[1]=3.000000;
 elementLength6S[2]=0.488444444444444;
-mValues6verticalS[2]=10;//3.000000;
-mValues6horizontalS[2]=10;//2.500000;
+mValues6verticalS[2]=3.000000;
+mValues6horizontalS[2]=2.500000;
 elementLength6S[3]=0.488444444444444;
-mValues6verticalS[3]=10;//3.000000;
-mValues6horizontalS[3]=10;//2.500000;
+mValues6verticalS[3]=3.000000;
+mValues6horizontalS[3]=2.500000;
 elementLength6S[4]=0.488444444444444;
-mValues6verticalS[4]=10;//2.500000;
-mValues6horizontalS[4]=10;//2.500000;
+mValues6verticalS[4]=2.500000;
+mValues6horizontalS[4]=2.500000;
 elementLength6S[5]=0.488444444444444;
-mValues6verticalS[5]=10;//2.500000;
-mValues6horizontalS[5]=10;//2.000000;
+mValues6verticalS[5]=2.500000;
+mValues6horizontalS[5]=2.000000;
 elementLength6S[6]=0.488444444444444;
-mValues6verticalS[6]=10;//2.500000;
-mValues6horizontalS[6]=10;//1.500000;
+mValues6verticalS[6]=2.500000;
+mValues6horizontalS[6]=1.500000;
 
 elementLength6S[7]=0.061218888888892 ; // Shorter due to window #1
-mValues6verticalS[7]=10;//2.500000;
-mValues6horizontalS[7]=10;//1.500000;
+mValues6verticalS[7]=2.500000;
+mValues6horizontalS[7]=1.500000;
 
 elementLength6S[8]=0.02349; // feeder window #1
-mValues6verticalS[8]=10;//0;
-mValues6horizontalS[8]=10;//0;
+mValues6verticalS[8]=0;
+mValues6horizontalS[8]=0;
 
 elementLength6S[9]=0.488444444444444 - 0.061218888888892 - 0.02349; // End of piece 7 (the window and start of the mirror si substracted from its length)
-mValues6verticalS[9]=10;//2.000000;
-mValues6horizontalS[9]=10;//1.500000;
+mValues6verticalS[9]=2.500000;
+mValues6horizontalS[9]=1.500000;
 
 elementLength6S[10]=0.076264444; // shorter due to window #2
-mValues6verticalS[10]=10;//2.000000;
-mValues6horizontalS[10]=10;//1.500000;
+mValues6verticalS[10]=2.000000;
+mValues6horizontalS[10]=1.500000;
 
 elementLength6S[11]=0.015; // feeder window #2
-mValues6verticalS[11]=10;//0;
-mValues6horizontalS[11]=10;//0;
+mValues6verticalS[11]=0;
+mValues6horizontalS[11]=0;
 
 elementLength6S[12]=0.488444444444444 - 0.015 - 0.076264444 - 0.00047; // End of Feeder (after window 2)
-mValues6verticalS[12]=10;//2.0;
-mValues6horizontalS[12]=10;//1.5;
+mValues6verticalS[12]=2.0;
+mValues6horizontalS[12]=1.5;
 
 /************************************************/
 /*                  Chopper calculations                    */
@@ -763,253 +690,30 @@ fclose(fp);
 printf("\n part 3 length: %f\n",DivSlit2Pos-DivSlit1Gap/2.0-DivSlit2Gap/2.0-DivSlit1Pos);
 printf("\n part 4 length: %f\n",DivSlit1Pos-DivSlit1Gap/2.0-sample_dist);
 
-  lambdamin=Lmin; 
-  lambdamax=Lmax;
-  XW=1.05*(WidthC+2*WidthT);
-  YH=1.05*Yheight;
-  sprintf(options1,"user1 bins=201 limits=[-%g,%g]",XW/2,XW/2);
-  sprintf(options4,"user1 bins=201 limits=[-%g,%g]",YH/2,YH/2);
-  sprintf(options2,"user1 bins=201 limits=[-%g,%g], user2 bins=201 limits=[-%g,%g]",XW/2,XW/2,YH/2,YH/2);
-  sprintf(options3,"user1 bins=201 limits=[-%g,%g], user2 bins=201 limits=[-%g,%g]",1.05*(WidthC/2),1.05*(WidthC/2),1.05*Yheight/2,1.05*Yheight/2);
-  sprintf(srcdef,"2015");
-  if (beamline==1) {
-    TCollmin=0;
-    TCollmax=0.058;
-  } else if (beamline==2) {
-    TCollmin=0;
-    TCollmax=0.06;
-  }
-  else {
-    TCollmin=0.011;
-    TCollmax=0.071;
-  }
-  if (strcasestr(sector,"N")) {
-    iBeamlines=iBeamlinesN;
-    DeltaX=-0.0585; DeltaZ=0.0925;
-  } else if (strcasestr(sector,"W")) {
-    iBeamlines=iBeamlinesW;
-    DeltaX=0.0585; DeltaZ=0.0925;
-  } else if (strcasestr(sector,"S")) {
-    iBeamlines=iBeamlinesS;
-    DeltaX=0.0585; DeltaZ=-0.0925;
-  } else if (strcasestr(sector,"E")) {
-    iBeamlines=iBeamlinesE;
-    DeltaX=-0.0585; DeltaZ=-0.0925;
-  }
-  ANGLE=iBeamlines[beamline-1]-90;
-  if (filter==0)
-    sprintf(MCPLfile,"%s%i.mcpl.gz",sector,beamline);
-  else
-    sprintf(MCPLfile,"%s%i_filtered.mcpl.gz",sector,beamline);
-  printf("MCPLfile is %s\n",MCPLfile);
- 
 %}
-
 TRACE
 
 COMPONENT Origin = Progress_bar()
-AT (0, 0, 0) ABSOLUTE
-
-/* read neutrons from an mcpl file*/
-
-COMPONENT vinROT2 = Arm()
-AT(0,0,0) RELATIVE PREVIOUS
-  ROTATED (0,-90,0) RELATIVE PREVIOUS
-
-COMPONENT vinROT1 = Arm()
-AT(0,0,0) RELATIVE PREVIOUS
-  ROTATED (-90,0,0) RELATIVE PREVIOUS
-
-COMPONENT vin = MCPL_input(filename=MCPLfile,verbose=1,repeat_count=repeat,E_smear=E_smear,pos_smear=pos_smear,dir_smear=dir_smear)
-WHEN (MCPL) AT(0,0,0) RELATIVE PREVIOUS
-EXTEND %{
-  if (mcipMCPL){
-    /*if(p>mcipthres) {ABSORB;}
-      else {SCATTER;}*/
-    p*=1.56e16;
-    p/=1e5;
-    z=z-0.137;
-  }
-  ParticleEnergy=VS2E*(vx*vx+vy*vy+vz*vz);
-%}
- 
-COMPONENT Sphere1 = PSD_monitor_4PI(filename="nonrotated", radius=2.2,restore_neutron=1)
-AT (0,0,0) RELATIVE PREVIOUS
-
-/* Focusing for this use of the source is a little unphysical: 1x1cm @ 1m ~ 1e-4 steradian. To be useful in a "proper" instrument, you should of course illuminate your beamport fully!*/
-COMPONENT Source = ESS_butterfly(sector=sector,beamline=beamline,Lmin=Lmin,Lmax=Lmax,c_performance=c_performance,t_performance=t_performance,dist=dist,target_index=index,cold_frac=cold, yheight=Yheight,
-				   focus_xw=0.12, focus_yh=0.12)
-  WHEN (!MCPL) AT (DeltaX,0,DeltaZ) ABSOLUTE
-  ROTATED (0, ANGLE, 0) ABSOLUTE
-
-COMPONENT Sphere0 = PSD_monitor_4PI(filename="rotated", radius=2.2,restore_neutron=1)
-AT (0,0,0) RELATIVE Source
-
-COMPONENT Focus_cut=Shape(xwidth=0.01,yheight=0.01)
-  AT(0,0,2) RELATIVE Source
-EXTEND %{
-  double xtmp,ytmp,ztmp,vxtmp,vytmp,vztmp;
-  xtmp=x;ytmp=y;ztmp=z;
-  vxtmp=vx;vytmp=vy;vztmp=vz;
-  ALLOW_BACKPROP;
-  PROP_Z0;
-  SCATTER;
-  
-  if (fabs(x)>0.06 || fabs(y)>0.06) {
-    ABSORB;
-  } else {
-    x=xtmp;y=ytmp;z=ztmp;
-    vx=vxtmp;vy=vytmp;vz=vztmp;
-  }
-%}
-
-COMPONENT BackTrace = Shape(xwidth=0.3,yheight=0.3)
-  AT (0,0,0.08) RELATIVE Source
-EXTEND %{
-  /* Propagate back to a small rectangle in front of moderators */
-
-  ALLOW_BACKPROP;
-  PROP_Z0;
-  SCATTER;
-  
-  /* Remove neutrons that are not from around the moderators */
-  /*if (fabs(x)>0.12 || fabs(y)>0.03) {
-   ABSORB;
-   }*/
-  double myL = (2*PI/V2K)/sqrt(vx*vx + vy*vy + vz*vz);
-  /*if (myL<mcipLmin || myL>mcipLmax) {
-    ABSORB;
-    }*/
-  t+=rand01()*ESS_SOURCE_DURATION;
-  /*if (t>3*ESS_SOURCE_DURATION) {
-    ABSORB;
-    }*/
-  /* Measure location and energy for later use */
-  SrcX=x;SrcY=y;SrcZ=z;
-  Eneutron=VS2E*(vx*vx + vy*vy + vz*vz);
-  if (Eneutron>EminTh) {
-    Emin=EminC;Emax=EmaxC;
-    IsCold=0;
-  } else {
-    Emin=EminTh;Emax=EmaxTh;
-    IsCold=1;
-  }
-  T0=t;
-  L0=myL;
-%}
+ AT (0,0,0) ABSOLUTE
 
 
-/* These arms are just to ensure we get a good view of the monolith */
-COMPONENT Arm1 = Arm()
-  AT (0,0,2) RELATIVE Source
+COMPONENT ESS_source = ESS_butterfly(
+yheight=0.030000,beamline=4,
+dist=1.903398,
+focus_xw=0.068797+2*0.01277,
+focus_yh=0.03472,
+Lmin=WaveMin, Lmax=WaveMax, acc_power=power, cold_frac=0.500000, sector="W",
+tmax_multiplier=1.500000, n_pulses=Npulse, c_performance=1.0, t_performance=1.0)
+AT (0, 0, 0) RELATIVE Origin
+ROTATED (0,0,0) RELATIVE Origin
 
-COMPONENT Arm2 = Arm()
-  AT (0,0,3.5) RELATIVE Source
-  /*
-
-
-COMPONENT AutoTOFL0 = Monitor_nD(xwidth=XW, yheight=YH, user1=T0, user2=L0, options="user1 limits=[0 5e-3] bins=51, user2 limits=[0.1 20] bins=41", restore_neutron=1)
- AT (0, 0, 0.001) RELATIVE BackTrace
-
-COMPONENT AutoTOF0 = Monitor_nD(xwidth=XW, yheight=YH, user1=T0, options="user1 limits=[0 5e-3] bins=51", restore_neutron=1)
- AT (0, 0, 0.001) RELATIVE PREVIOUS
-
-  COMPONENT AutoL0 = Monitor_nD(xwidth=XW, yheight=YH, user1=L0, options="user1 limits=[0.1 20] bins=41", restore_neutron=1)
- AT (0, 0, 0.001) RELATIVE PREVIOUS
-
-  COMPONENT PSD0= Monitor_nD(filename="flat",xwidth=0.2,yheight=0.2,user1=SrcX,user2=SrcY,options="user1 limits=[-0.1 0.1] bins=90, user2 limits=[-0.1 0.1] bins=90,", restore_neutron=1)
-  AT (0,0,0.001) RELATIVE PREVIOUS
-
-  COMPONENT PSD1=Monitor_nD(filename="flatC",xwidth=0.2,yheight=0.2,user1=SrcX,user2=SrcY,options="user1 limits=[-0.1 0.1] bins=90, user2 limits=[-0.1 0.1] bins=90,", restore_neutron=1)
-WHEN (Eneutron<EminTh) AT (0,0,0.001) RELATIVE PREVIOUS
-
-  COMPONENT PSD2=Monitor_nD(filename="flatT",xwidth=0.16,yheight=0.16,user1=SrcX,user2=SrcY,options="user1 limits=[-0.1 0.1] bins=90, user2 limits=[-0.1 0.1] bins=90,", restore_neutron=1)
-WHEN (Eneutron>=EminTh) AT (0,0,0.001) RELATIVE PREVIOUS
-  */
-
-/* Measures the horizontal emmision coordinate of all neutrons - gives the "apparent width" of the moderators as seen from the beamline */
-//COMPONENT MonND1 = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcX, username1="Horizontal position / [m]", options=options1, restore_neutron=1)
-//AT (0, 0, 1) RELATIVE Source
-
-/* Measures the horizontal emmision coordinate of all neutrons - gives the "apparent width" of the moderators as seen from the beamline */
-//COMPONENT CWidth = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcX, username1="Horizontal position / [m]", options=options1, restore_neutron=1)
-//  WHEN(Eneutron<=EmaxC && Eneutron>=EminC) AT (0, 0, 1) RELATIVE Source
-
-/* Measures the horizontal emmision coordinate of all neutrons - gives the "apparent width" of the moderators as seen from the beamline */
-//COMPONENT TWidth = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcX, username1="Horizontal position / [m]", options=options1, restore_neutron=1)
-//  WHEN(Eneutron<=EmaxTh && Eneutron>=EminTh) AT (0, 0, 1) RELATIVE Source
-
-/* Measures the vertical emmision coordinate of cold neutrons */
-//COMPONENT MonND2 = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcY, username1="Vertical position COLD / [m]", options=options4, restore_neutron=1)
-//  WHEN(IsCold) AT (0, 0, 1) RELATIVE Source
-
-/* Measures the vertical emmision coordinate of thermal neutrons */
-//COMPONENT MonND2_2 = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcY, username1="Vertical position THERMAL/ [m]", options=options4, restore_neutron=1)
-//  WHEN(!IsCold) AT (0, 0, 1) RELATIVE Source
-
-/* 2D-plot of emmision coordinates for all neutrons */
-//COMPONENT MonND3 = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcX, username1="Horizontal position / [m]", user2=SrcY,username2="Vertical position / [m]", options=options2, restore_neutron=1)
-// AT (0, 0, 1) RELATIVE Source
-
-/* 2D-plot of (x,z) emmision coordinates for all neutrons */
-//COMPONENT MonND4 = Monitor_nD(xwidth=XW, yheight=YH, user1=SrcX, username1="Emission position / [m]", user2=SrcZ, username2="Z-component of position / [m]", options="user1 bins=201 limits=[-0.3,0.3], user2 bins=201 limits=[-0.3,0.3]", restore_neutron=1)
-// AT (0, 0, 1) RELATIVE Source
-//  EXTEND %{
-    //printf("Time is %g\n",t);
-  //%}
-
-
-
-COMPONENT AutoTOFL = Monitor_nD(xwidth=0.1, yheight=0.1, options="tof limits=[0 15e-3] bins=51, lambda limits=[0.1 20] bins=41", restore_neutron=1)
- AT (0, 0, 2) RELATIVE Source
-
-
-
-/* Measures brilliance of the "full" cold source */
-COMPONENT BrillmonCOLD = Brilliance_monitor(
-    nlam = 101, nt = 101, filename = "brillCOLD", t_0 = -1000,
-    t_1 =4e4, lambda_0 = lambdamin, lambda_1 = lambdamax,
-    Freq =14, toflambda=1 ,tofcuts=0, srcarea=(100*0.072*100*Yheight), restore_neutron=1,source_dist=2,xwidth=0.1,yheight=0.1)
-WHEN(IsCold)  AT (0, 0, 2) RELATIVE Source
-
-/* Measures "collimated" brilliance of the cold source over fixed 6 cm wide area x central part vertically. */
-/* Used for calibration of performance wrt. MCNP BF1 output, see http://ess_butterfly.mcstas.org */
-COMPONENT BrillmonCOLD_COLL = Brilliance_monitor(
-    nlam = 101, nt = 101, filename = "brillCOLD_COLL", t_0 = 0,
-    t_1 = 4e4, lambda_0 = lambdamin, lambda_1 = lambdamax,
-    Freq =14, toflambda=1,tofcuts=0, srcarea=(100*0.06*100*2*Yheight/2.5), restore_neutron=1,source_dist=2,xwidth=0.1,yheight=0.1)
-  WHEN(fabs(SrcY)<Yheight/2.5 && SrcX < (0.071+delta) && SrcX > (0.011+delta))  AT (0, 0, 2) RELATIVE Source
-
-/* Measures brilliance of the "full" thermal source */
-COMPONENT BrillmonTHRM = Brilliance_monitor(
-    nlam = 101, nt = 101, filename = "brillTHRM", t_0 = -1000,
-    t_1 =4e4, lambda_0 = lambdamin, lambda_1 = lambdamax,
-    Freq =14, toflambda=1,tofcuts=0, srcarea=(100*0.108*100*Yheight), restore_neutron=1,source_dist=2,xwidth=0.1,yheight=0.1)
-  WHEN (!IsCold) AT (0, 0, 2) RELATIVE Source
-
-/* Measures "collimated" brilliance of the thermal source over fixed 6 cm wide area (or smaller at beamlines no. 1,2) x central part vertically. */
-/* Used for calibration of performance wrt. MCNP BF1 output, see http://ess_butterfly.mcstas.org */
-COMPONENT BrillmonTHRM_COLL = Brilliance_monitor(
-    nlam = 101, nt = 101, filename = "brillTHRM_COLL", t_0 = -1000,
-    t_1 =4e4, lambda_0 = lambdamin, lambda_1 = lambdamax,
-      Freq =14, toflambda=1,tofcuts=0, srcarea=(100*0.06*100*2*Yheight/2.5), restore_neutron=1,source_dist=2,xwidth=0.1,yheight=0.1)
-  WHEN (fabs(SrcY)<Yheight/2.5 && -SrcX>(TCollmin+delta) && -SrcX<(TCollmax+delta))  AT (0, 0, 2) RELATIVE Source
-
-  COMPONENT PSD0x= Monitor_nD(filename="flat_x",xwidth=0.1,yheight=0.1,user1=SrcX,user2=SrcY,options="user1 limits=[-0.08 0.08] bins=90, user2 limits=[-0.08 0.08] bins=90,", restore_neutron=1)
-  AT (0,0,0.001) RELATIVE PREVIOUS
-
-  COMPONENT PSD1x=Monitor_nD(filename="flatC_x",xwidth=0.1,yheight=0.1,user1=SrcX,user2=SrcY,options="user1 limits=[-0.08 0.08] bins=90, user2 limits=[-0.08 0.08] bins=90,", restore_neutron=1)
-WHEN (Eneutron<EminTh) AT (0,0,0.001) RELATIVE PREVIOUS
-
-  COMPONENT PSD2x=Monitor_nD(filename="flatT_x",xwidth=0.1,yheight=0.1,user1=SrcX,user2=SrcY,options="user1 limits=[-0.08 0.08] bins=90, user2 limits=[-0.08 0.08] bins=90,", restore_neutron=1)
-WHEN (Eneutron>=EminTh) AT (0,0,0.001) RELATIVE PREVIOUS
 
 
 COMPONENT StartOfGuide = Arm()
-AT (0.01277,0.000000,1.903398-u) RELATIVE Source
-ROTATED (0,-0.56,0) RELATIVE Source 
+AT (0.01277,0.000000,1.903398-u) RELATIVE Origin
+ROTATED (0,-0.56,0) RELATIVE Origin 
 
-COMPONENT NBOA= Elliptic_guide_gravity(
+COMPONENT NBOA= Elliptic_guide_gravity_custom(
 l=4.39553, linxw=3.4578, linyh=1.36, loutxw=0.415155, loutyh=3.487681,
 xwidth = 0.069634, yheight = 0.04862, dimensionsAt="mid",
 R0=0.990000, Qc=0.021700, alpha=3.100000, mvaluesright = mValues6horizontalS, mvaluesleft = mValues6horizontalS,mvaluestop = mValues6verticalS,mvaluesbottom = mValues6verticalS,seglength = elementLength6S, W=0.003000)
@@ -1018,14 +722,12 @@ AT (0,0,u) RELATIVE StartOfGuide
 
 COMPONENT EndOfelement_6= Arm()
 AT (0,0,4.39553+2*u) RELATIVE PREVIOUS
-
-
-
-
+/*
 COMPONENT L_monBeforePSC1 = L_monitor(
     nL = 100, filename = "L_monBeforePSC1.dat", xwidth = 0.2,restore_neutron=1,
-    yheight = 0.2, Lmin = lambda_1/2, Lmax = lambda_0*2)
-  AT (0, 0, u) RELATIVE PREVIOUS
+    yheight = 0.2, Lmin = lambda_1/2, Lmax = lambda_0*2) //Change to 120 to check source
+  AT (0, 0, u) RELATIVE PREVIOUS  
+  
 
 COMPONENT ToFBeforerPSC1 = TOF_monitor(
     nt = 1000, filename = "ToFBeforePSC1.dat", xwidth = 0.2,restore_neutron=1,
@@ -1035,44 +737,62 @@ COMPONENT ToFBeforerPSC1 = TOF_monitor(
 COMPONENT PSD_beforePulseShapping1 = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_beforePSC1.dat",restore_neutron=1,
     xwidth = 0.2, yheight = 0.2)
-  WHEN (ParticleEnergy>0.1 && ParticleEnergy<100) AT (0, 0, u) RELATIVE PREVIOUS
+  AT (0, 0, u) RELATIVE PREVIOUS
+
 
 COMPONENT TofLambdaBeforePSC = TOFLambda_monitor(
     nL = 100, nt = 100, tmin =0, tmax = 2e4,
     filename = "TofLambdaBeforePSC1.dat", xwidth = sampleSizeY,restore_neutron=1,
     yheight = sampleSizeY, Lmin = lambda_0*0.5, Lmax = lambda_1*2)
   AT (0, 0, u) RELATIVE PREVIOUS
+*/
 
-COMPONENT PulseShapingChopper = DiskChopper(   /************** Pulse shaping chopper 1 ****************/
-    theta_0 = 170.0, radius = 0.35, nu =14.0*chopPulseFrequencyOrder, nslit = 1, yheight=0.052,
+/************** Pulse shaping chopper 1 ****************/
+
+/****
+COMPONENT PulseShapingChopper = DiskChopper(   
+    theta_0 = 170.0, radius = 0.35, nu =14.0*chopPulseFrequencyOrder, nslit = 1, yheight=0.047514+2*ChopTransBunker,
   phase= chopPulsePhaseOffset-0)
-  WHEN (CHOPPERS)  AT (0, 0, PscOff) RELATIVE PREVIOUS
+  AT (0, 0, PscOff) RELATIVE PREVIOUS
+****/
 
+  /*
 COMPONENT PSD_AfterPulseShapping1 = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_AfterPSC1.dat",restore_neutron=1,
     xwidth = 0.2, yheight = 0.2)
   AT (0, 0, u) RELATIVE PREVIOUS
 
+
 COMPONENT ToFInsidePSC = TOF_monitor(
     nt = 1000, filename = "ToFInsidePSC.dat", xwidth = 0.2,restore_neutron=1,
     yheight = 0.2, tmax = 2e4)
   AT (0, 0,u) RELATIVE  PREVIOUS
-
-COMPONENT PulseShapingChopper2 = DiskChopper(   /************** Pulse shaping chopper 2 ****************/
-    theta_0 = 170.0, radius = 0.35, nu =14.0*chopPulseFrequencyOrder, nslit = 1, yheight=0.052,
+*/
+/************** Pulse shaping chopper 2 ****************/
+/***
+COMPONENT PulseShapingChopper2 = DiskChopper(   
+    theta_0 = 170.0, radius = 0.35, nu =14.0*chopPulseFrequencyOrder, nslit = 1, yheight=0.047514+2*ChopTransBunker,
   phase= chopPulse2PhaseOffset+0)
-  WHEN (CHOPPERS)   AT (0, 0, discD) RELATIVE PREVIOUS
-
+  AT (0, 0, discD) RELATIVE PREVIOUS
+  ***/
+/*
+COMPONENT L_monLongRange1 = L_monitor(
+    nL = 2000, filename = "L_monBeforeRongRange1.dat", xwidth = 0.2,restore_neutron=1,
+    yheight = 0.2, Lmin = lambda_1/2, Lmax = 200) //Change to 120 to check source
+  AT (0, 0, u) RELATIVE PREVIOUS
+  
 COMPONENT TofLambdaAfterPSC2 = TOFLambda_monitor(
     nL = 100, nt = 100, tmin = 0, tmax = 2e4,
     filename = "TofLambdaAfterPSC2.dat", xwidth = sampleSizeY,restore_neutron=1,
     yheight = sampleSizeY, Lmin = lambda_0*0.5, Lmax = lambda_1*2)
   AT (0, 0, u) RELATIVE PREVIOUS
 
+  
 COMPONENT PSD_AfterPSC2 = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_AfterPSC2.dat",restore_neutron=1,
     xwidth = 0.2, yheight = 0.2)
   AT (0, 0, u) RELATIVE PREVIOUS
+
 
 COMPONENT ToFAfterPSC2 = TOF_monitor(
     nt = 1000, filename = "ToFAfterPSC2.dat", xwidth = 0.2,restore_neutron=1,
@@ -1084,9 +804,7 @@ COMPONENT L_monAfterPSC2 = L_monitor(
     yheight = 0.2, Lmin = lambda_1/2, Lmax = lambda_0*2)
   AT (0, 0, u) RELATIVE PREVIOUS
 
-
-
-
+*/
 
 COMPONENT EndOfelement_5= Arm()
 AT (0,0,0.081707 ) RELATIVE EndOfelement_6
@@ -1097,48 +815,48 @@ AT (0,0,0.081707 ) RELATIVE EndOfelement_6
 // In this file it is made by 36 straight sections of each 0.5 meters, rotated [benderAngle] deg each, corresponding to a radius of curvature of ~1519 meters.
 // In this section there are two choppers, FOC1 and FOC2.
 
-COMPONENT curved_guide_1_0 = Guide_gravity(
+COMPONENT curved_guide_1_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (0,0,u) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_2_0 = Guide_gravity(
+COMPONENT curved_guide_2_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_3_0 = Guide_gravity(
+COMPONENT curved_guide_3_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
 
-COMPONENT curved_guide_4_0 = Guide_gravity(
+COMPONENT curved_guide_4_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
@@ -1147,18 +865,18 @@ ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 // The chopper is placed 2.15 meters after the start of the curved section, corresponding to 6.6265 meters after guide start. 
 // The gap arround the chopper is 4 cm
 
-COMPONENT curved_guide_5_beforeChopper = Guide_gravity(
+COMPONENT curved_guide_5_beforeChopper = Guide_gravity_custom(
   l=0.13,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-
+/*
 COMPONENT L_monBeforeFOC1 = L_monitor(
     nL = 100, filename = "L_monBeforeFOC1.dat", xwidth = 0.2,restore_neutron=1,
     yheight = 0.2, Lmin = lambda_0/2.0, Lmax = lambda_1*2.0)
@@ -1170,21 +888,39 @@ COMPONENT ToFBeforeFOC1 = TOF_monitor(
     yheight = 0.2, tmax = 2e4)
   AT (0, 0, u) RELATIVE  PREVIOUS
 
+
 COMPONENT PSD_beforeFOC1 = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_beforeFOC1.dat",restore_neutron=1,
     xwidth = 0.2, yheight = 0.2)
   AT (0, 0, u) RELATIVE PREVIOUS
 
-COMPONENT FOC1 = DiskChopper(   /****************************  Pulse removing chopper 1  ************************/
-    theta_0 =FOCopen1 , radius = 0.35, nu =14, nslit = 1, yheight=0.052,
+COMPONENT L_monLongRange2 = L_monitor(
+    nL = 2000, filename = "L_monBeforeRongRange2.dat", xwidth = 0.2,restore_neutron=1,
+    yheight = 0.2, Lmin = lambda_1/2, Lmax = 200) //Change to 120 to check source
+  AT (0, 0, u) RELATIVE PREVIOUS
+*/
+
+/****************************  Pulse removing chopper 1  ************************/
+/*
+COMPONENT FOC1 = DiskChopper(   
+    theta_0 =FOCopen1 , radius = 0.35, nu =14, nslit = 1, yheight=0.047514+2*ChopTransBunker,
    phase=chopFrameOverlap1PhaseOffset)
-  WHEN (CHOPPERS)  AT (0, 0,0.02) RELATIVE PREVIOUS
+ AT (0, 0,0.02) RELATIVE PREVIOUS
 ROTATED (0,0,0) RELATIVE PREVIOUS
+*/
+
+/*
+COMPONENT L_monLongRange3 = L_monitor(
+    nL = 2000, filename = "L_monBeforeRongRange3.dat", xwidth = 0.2,restore_neutron=1,
+    yheight = 0.2, Lmin = lambda_1/2, Lmax = 200) //Change to 120 to check source
+  AT (0, 0, u) RELATIVE PREVIOUS
+  
 
 COMPONENT PSD_afterFOC1 = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_afterFOC1.dat",restore_neutron=1,
     xwidth = 0.2, yheight = 0.2)
   AT (0, 0, u) RELATIVE PREVIOUS
+
 
 COMPONENT ToFAfterFOC1 = TOF_monitor(
     nt = 1000, filename = "ToFAfterFOC1.dat", xwidth = 0.2,restore_neutron=1,
@@ -1196,147 +932,148 @@ COMPONENT L_monAfterFOC1 = L_monitor(
     yheight = 0.2, Lmin = lambda_0/2.0, Lmax = lambda_1*2.0)
   AT (0, 0, u) RELATIVE PREVIOUS
 
+*/
 
-COMPONENT curved_guide_5_afterChopper = Guide_gravity(
+COMPONENT curved_guide_5_afterChopper = Guide_gravity_custom(
   l=0.33,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (0,0,0.17) RELATIVE curved_guide_5_beforeChopper
 ROTATED (0,0,0) RELATIVE curved_guide_5_beforeChopper
 
-COMPONENT curved_guide_6_0 = Guide_gravity(
+COMPONENT curved_guide_6_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1= 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.33+u) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_7_0 = Guide_gravity(
+COMPONENT curved_guide_7_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_8_0 = Guide_gravity(
+COMPONENT curved_guide_8_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1  = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_9_0 = Guide_gravity(
+COMPONENT curved_guide_9_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_10_0 = Guide_gravity(
+COMPONENT curved_guide_10_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_11_0 = Guide_gravity(
+COMPONENT curved_guide_11_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_12_0 = Guide_gravity(
+COMPONENT curved_guide_12_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_13_0 = Guide_gravity(
+COMPONENT curved_guide_13_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_14_0 = Guide_gravity(
+COMPONENT curved_guide_14_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_15_0 = Guide_gravity(
+COMPONENT curved_guide_15_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_16_0 = Guide_gravity(
+COMPONENT curved_guide_16_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
-COMPONENT curved_guide_17_0 = Guide_gravity(
+COMPONENT curved_guide_17_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 
@@ -1345,18 +1082,18 @@ ROTATED (0,benderAngle,0) RELATIVE PREVIOUS
 // The chopper is placed 8.59 meters after the start of the curved section, corresponding to 13.0695 meters after guide start. 
 // The gap arround the chopper is 4 cm
 
-COMPONENT curved_guide_18_beforeChopper = Guide_gravity(
+COMPONENT curved_guide_18_beforeChopper = Guide_gravity_custom(
   l=0.07,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_17_1
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_17_1
 
-
+/*
 COMPONENT L_monBeforeFOC2 = L_monitor(
     nL = 100, filename = "L_monBeforeFOC2.dat", xwidth = 0.2,restore_neutron=1,
     yheight = 0.2, Lmin = lambda_0/2.0, Lmax = lambda_1*2.0)
@@ -1373,12 +1110,21 @@ COMPONENT PSD_beforeFOC2 = PSD_monitor(
     xwidth = 0.2, yheight = 0.2)
   AT (0, 0, u) RELATIVE PREVIOUS
   
-COMPONENT FOC2 = DiskChopper(        /************** Pulse removing chopper 2 ****************/
-    theta_0 =FOCopen2 , radius = 0.35, nu =14, nslit = 1, yheight=0.052,
+  COMPONENT L_monLongRange4 = L_monitor(
+    nL = 2000, filename = "L_monBeforeRongRange4.dat", xwidth = 0.2,restore_neutron=1,
+    yheight = 0.2, Lmin = lambda_1/2, Lmax = 200) //Change to 120 to check source
+  AT (0, 0, u) RELATIVE PREVIOUS
+*/
+  
+/************** Pulse removing chopper 2 ****************/
+/*
+COMPONENT FOC2 = DiskChopper(        
+    theta_0 =FOCopen2 , radius = 0.35, nu =14, nslit = 1, yheight=0.047514+2*ChopTransBunker,
    phase=chopFrameOverlap2PhaseOffset)
-  WHEN (CHOPPERS)  AT (0,0, 0.02) RELATIVE PREVIOUS
+ AT (0,0, 0.02) RELATIVE PREVIOUS
 ROTATED (0,0,u) RELATIVE PREVIOUS
-
+*/
+/*
 COMPONENT PSD_afterFOC2 = PSD_monitor(
     nx = 100, ny = 100, filename = "PSD_afterFOC2.dat",restore_neutron=1,
     xwidth = 0.2, yheight = 0.2)
@@ -1390,229 +1136,249 @@ COMPONENT ToFAfterFOC2 = TOF_monitor(
   AT (0, 0, u) RELATIVE  PREVIOUS
 
 COMPONENT L_monAfterFOC2 = L_monitor(
-    nL = 100, filename = "L_monAfterFOC2.dat",restore_neutron=1, xwidth = 0.2,
-    yheight = 0.2, Lmin = lambda_0/2.0, Lmax = lambda_1*2.0)
+    nL = 1000, filename = "L_monAfterFOC2.dat",restore_neutron=1, xwidth = 0.2,
+    yheight = 0.2, Lmin = lambda_0/2.0, Lmax = 200)
   AT (0, 0, u) RELATIVE PREVIOUS
+*/
 
-
-COMPONENT curved_guide_18_afterChopper = Guide_gravity(
+COMPONENT curved_guide_18_afterChopper = Guide_gravity_custom(
   l=0.39,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (0,0,0.11) RELATIVE curved_guide_18_beforeChopper // curved_guide_17_1
 ROTATED (0,0,0) RELATIVE curved_guide_18_beforeChopper // curved_guide_17_1
 
-COMPONENT curved_guide_19_0 = Guide_gravity(
+COMPONENT curved_guide_19_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.39+u) RELATIVE PREVIOUS // curved_guide_18_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_18_0
 
-COMPONENT curved_guide_20_0 = Guide_gravity(
+COMPONENT curved_guide_20_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_19_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_19_0
 
-COMPONENT curved_guide_21_0 = Guide_gravity(
+COMPONENT curved_guide_21_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_20_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_20_0
 
-COMPONENT curved_guide_22_0 = Guide_gravity(
+COMPONENT curved_guide_22_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_21_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_21_0
 
-COMPONENT curved_guide_23_0 = Guide_gravity(
+COMPONENT curved_guide_23_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_22_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_22_0
 
-COMPONENT curved_guide_24_0 = Guide_gravity(
+COMPONENT curved_guide_24_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_23_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_23_0
 
-COMPONENT curved_guide_25_0 = Guide_gravity(
+COMPONENT curved_guide_25_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_24_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_24_0
 
-COMPONENT curved_guide_26_0 = Guide_gravity(
+COMPONENT curved_guide_26_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_25_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_25_0
 
-COMPONENT curved_guide_27_0 = Guide_gravity(
+COMPONENT curved_guide_27_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_26_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_26_0
 
-COMPONENT curved_guide_28_0 = Guide_gravity(
+COMPONENT curved_guide_28_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_27_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_27_0
 
-COMPONENT curved_guide_29_0 = Guide_gravity(
+COMPONENT curved_guide_29_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_28_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_28_0
 
-COMPONENT curved_guide_30_0 = Guide_gravity(
+COMPONENT curved_guide_30_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_29_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_29_0
 
-COMPONENT curved_guide_31_0 = Guide_gravity(
+COMPONENT curved_guide_31_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_30_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_30_0
 
-COMPONENT curved_guide_32_0 = Guide_gravity(
+COMPONENT curved_guide_32_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_31_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_31_0
 
-COMPONENT curved_guide_33_0 = Guide_gravity(
+COMPONENT curved_guide_33_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_32_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_32_0
 
-COMPONENT curved_guide_34_0 = Guide_gravity(
+COMPONENT curved_guide_34_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_33_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_33_0
 
-COMPONENT curved_guide_35_0 = Guide_gravity(
+COMPONENT curved_guide_35_0 = Guide_gravity_custom(
   l=0.5,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_34_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_34_0
 
 
-COMPONENT curved_guide_36_0 = Guide_gravity(
+COMPONENT curved_guide_36_0 = Guide_gravity_custom(
   l=0.495689131828,G=-9.82,
   w1 = 0.029534, w2 = 0.029534,
   h1 = 0.047514, h2 = 0.047514,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 3.000000, mright = 3.500000,
+  mtop = 2.500000,mbottom =2.500000)
 AT (7.57345916228e-10,0,0.500 + u + 6e-5) RELATIVE PREVIOUS // curved_guide_34_0
 ROTATED (0,benderAngle,0) RELATIVE PREVIOUS // curved_guide_34_0
 
 
-
+	
 COMPONENT EndOfelement_4= Arm()
 AT (7.57345916228e-10,0,0.495689132 + u) RELATIVE PREVIOUS // curved_guide_35_0
 
+/*
+COMPONENT Div2d_AfterBender = Divergence_monitor(
+    nh = 200, nv = 200, filename = "Div2d_AfterBender.dat", xwidth = 0.1, restore_neutron=1,
+    yheight = 0.1, maxdiv_h = 2.5, maxdiv_v = 1.5)
+  AT (0, 0,u) RELATIVE PREVIOUS
+*/
 
 
-COMPONENT elliptical_guide_gravity3= Elliptic_guide_gravity(
+
+
+/*******  Start of scatter logger. Logging scatterings and absorption in the guide system. *********/
+COMPONENT log_P_start=Shielding_logger()
+AT (0,0,0) RELATIVE PREVIOUS
+EXTEND
+%{
+#ifdef scatter_logger_stop
+#undef scatter_logger_stop
+#endif
+#define scatter_logger_stop log_P_start
+%}
+
+
+COMPONENT elliptical_guide_gravity3= Elliptic_guide_gravity_custom(
 l=24.928800, linxw=3.709727, linyh=4.423828, loutxw=28.638527, loutyh=29.352628,
 xwidth = 0.060000, yheight = 0.090000, dimensionsAt="mid",
 R0=0.990000, Qc=0.021700, alpha=3.100000, mvaluesright = mValues3horizontalS, mvaluesleft = mValues3horizontalS,mvaluestop = mValues3verticalS,mvaluesbottom = mValues3verticalS,seglength = elementLength3S, W=0.003000)
@@ -1622,65 +1388,77 @@ ROTATED (0,0,0) RELATIVE EndOfelement_4
 COMPONENT EndOfelement_3= Arm()
 AT (0,0,24.928800+u) RELATIVE PREVIOUS
 
+/*
 
-
+COMPONENT Div2d_BeforeStraight = Divergence_monitor(
+    nh = 200, nv = 200, filename = "Div2d_BeforeStraight.dat", xwidth = 0.1, restore_neutron=1,
+    yheight = 0.1, maxdiv_h = 1, maxdiv_v = 1)
+  AT (0, 0,u) RELATIVE PREVIOUS
+*/
 
 /*********************** LONG STRAIGHT SECTION **************************/
 
-COMPONENT E0_100meV24m = Monitor_nD(xwidth=0.1, yheight=0.1, options="per cm2 Energy limits=[0 100] bins=101", restore_neutron=1)
-AT (0,0, u/2.0) RELATIVE PREVIOUS
-
-  
-COMPONENT straight_guide_2_1= Guide_gravity(l=chopBWPos-startXposition_straight-BW_chopGap/2,G=-9.82,
+COMPONENT straight_guide_2_1= Guide_gravity_custom(l=chopBWPos-startXposition_straight-BW_chopGap/2,G=-9.82,
   w1 = 0.060000, w2 = 0.060000,
   h1 = 0.090000, h2 = 0.090000,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
-AT (0,0, u/2.0) RELATIVE PREVIOUS
+  mleft = 1.500000, mright = 1.500000,
+  mtop = 1.000000,mbottom =1.000000)
+AT (0,0, u) RELATIVE PREVIOUS
 ROTATED (0,0,0) RELATIVE PREVIOUS
 
-
+/*
 COMPONENT L_monBeforeBWC = L_monitor(
     nL = 100, filename = "L_monBeforeBWC.dat", xwidth = 0.2,restore_neutron=1,
     yheight = 0.2, Lmin = lambda_0/2.0, Lmax = lambda_1*2.0)
   AT (0, 0, chopBWPos-startXposition_straight-BW_chopGap/2+u) RELATIVE PREVIOUS
 
 COMPONENT ToFBeforeBWC = TOF_monitor(
-    nt = 1000, filename = "ToFBeforeBWC.dat",restore_neutron=1, xwidth = 0.2,
-    yheight = 0.2, tmax = 5.5*72.0*1e6/v_0)
+    nt = 300, filename = "ToFBeforeBWC.dat",restore_neutron=1, xwidth = 0.2,
+    yheight = 0.2, tmax = 3.5*72.0*1e6/v_0)
   AT (0, 0, u) RELATIVE  PREVIOUS
+*/
 
-COMPONENT BWC1 = DiskChopper(  /************** Bandwidth chopper 1 ****************/
-    theta_0 = BWopen, radius = 0.35, nu =14, nslit = 1, yheight=0.086,
+/*
+ // ************** Bandwidth chopper 1 ****************
+COMPONENT BWC1 = DiskChopper( 
+    theta_0 = BWopen, radius = 0.35, nu =14, nslit = 1, yheight=0.090+2*ChopTransE2,
    delay=chopBWOffset)
    //phase=chopBWPhaseOffset)
-  WHEN (CHOPPERS)   AT (0, 0, BW_chopGap/2+u) RELATIVE PREVIOUS
+  AT (0, 0, BW_chopGap/2+u) RELATIVE PREVIOUS
 
-  COMPONENT BWC2 = DiskChopper(  /************** Bandwidth chopper 2 ****************/
-    theta_0 = BWopen, radius = 0.35, nu =-14, nslit = 1, yheight=0.086,
+ // ************** Bandwidth chopper 2 ****************
+  COMPONENT BWC2 = DiskChopper( 
+    theta_0 = BWopen, radius = 0.35, nu =-14, nslit = 1, yheight=0.090+2*ChopTransE2,
    delay=chopBWOffset)
    //phase=chopBWPhaseOffset)
-   WHEN (CHOPPERS)   AT (0, 0, u) RELATIVE  PREVIOUS
-   
+   AT (0, 0, u) RELATIVE  PREVIOUS
+  */
+/*  
 COMPONENT ToFAfterBWC = TOF_monitor(
-    nt = 1000, filename = "ToFAfterBWC.dat",restore_neutron=1, xwidth = 0.2,
-    yheight = 0.2, tmax =  5.5*72.0*1.0e6/v_0)
+    nt = 300, filename = "ToFAfterBWC.dat",restore_neutron=1, xwidth = 0.2,
+    yheight = 0.2, tmax =  3.5*72.0*1.0e6/v_0)
   AT (0, 0, u) RELATIVE  PREVIOUS
-
+  
+COMPONENT L_monAfterBWLong = L_monitor(
+    nL = 1000, filename = "L_monAfterBWLong.dat",restore_neutron=1, xwidth = 0.2,
+    yheight = 0.2, Lmin = lambda_0/2.0, Lmax = 200)
+  AT (0, 0, u) RELATIVE PREVIOUS
+  
 COMPONENT L_monAfterBWC = L_monitor(
     nL = 100, filename = "L_monAfterBWC.dat", restore_neutron=1,xwidth = 0.2,
     yheight = 0.2, Lmin = lambda_0/2.0, Lmax = lambda_1*2.0)
   AT (0, 0, u) RELATIVE PREVIOUS
+*/
 
-COMPONENT straight_guide_2_2= Guide_gravity(l=length2-chopBWPos+startXposition_straight-BW_chopGap/2,G=-9.82,
+COMPONENT straight_guide_2_2= Guide_gravity_custom(l=length2-chopBWPos+startXposition_straight-BW_chopGap/2,G=-9.82,
   w1 = 0.060000, w2 = 0.060000,
   h1 = 0.090000, h2 = 0.090000,
   R0=0.990000,Qc=0.021700,
   alpha=3.100000,W=0.003000,
-  mleft = 10.0, mright = 10.0,
-  mtop = 10.0,mbottom =10.0)
+  mleft = 1.500000, mright = 1.500000,
+  mtop = 1.000000,mbottom =1.000000)
 AT (0,0, BW_chopGap/2) RELATIVE PREVIOUS
 ROTATED (0,0,0) RELATIVE PREVIOUS
 
@@ -1693,7 +1471,7 @@ AT (0,0,length2-chopBWPos+startXposition_straight-BW_chopGap/2 + u) RELATIVE str
 
 /*********************** LAST FOCUSING SECTION **************************/
 
-COMPONENT elliptical_guide_gravity1_1= Elliptic_guide_gravity(
+COMPONENT elliptical_guide_gravity1_1= Elliptic_guide_gravity_custom(
 l=length1-DivSlit3Pos-DivSlit3Gap/2.0+sample_dist, linxw=Linx1, 
 linyh=Liny1, loutxw=Loutx1+DivSlit3Pos+DivSlit3Gap/2.0-sample_dist, 
 loutyh=Louty1+DivSlit3Pos+DivSlit3Gap/2.0-sample_dist,
@@ -1706,7 +1484,7 @@ COMPONENT DiwJaw3 = Slit(
     yheight =1, xwidth= DivSlit3_width)
 AT (0,0, 2*u+length1-(DivSlit3Pos-sample_dist)) RELATIVE EndOfelement_2
 
-COMPONENT elliptical_guide_gravity1_2= Elliptic_guide_gravity(
+COMPONENT elliptical_guide_gravity1_2= Elliptic_guide_gravity_custom(
 l=DivSlit3Pos-DivSlit2Gap/2.0-DivSlit3Gap/2.0-DivSlit2Pos, linxw=Linx1+length1-(DivSlit3Pos-DivSlit3Gap/2.0-sample_dist), 
 linyh=Liny1+length1-(DivSlit3Pos-DivSlit3Gap/2.0-sample_dist), loutxw=Loutx1+DivSlit2Pos+DivSlit2Gap/2.0-sample_dist, 
 loutyh=Louty1+DivSlit2Pos+DivSlit2Gap/2.0-sample_dist,
@@ -1719,7 +1497,7 @@ COMPONENT DiwJaw2 = Slit(
     yheight = 1, xwidth=DivSlit2_width)
 AT (0,0, u+length1-(DivSlit2Pos-sample_dist))  RELATIVE EndOfelement_2
 
-COMPONENT elliptical_guide_gravity1_3= Elliptic_guide_gravity(
+COMPONENT elliptical_guide_gravity1_3= Elliptic_guide_gravity_custom(
 l=DivSlit2Pos-DivSlit1Gap/2.0-DivSlit2Gap/2.0-DivSlit1Pos, linxw=Linx1+length1-(DivSlit2Pos-DivSlit2Gap/2.0-sample_dist), 
 linyh=Liny1+length1-(DivSlit2Pos-DivSlit2Gap/2.0-sample_dist), loutxw=Loutx1+DivSlit1Pos+DivSlit1Gap/2.0-sample_dist, 
 loutyh=Louty1+DivSlit1Pos+DivSlit1Gap/2.0-sample_dist,
@@ -1732,7 +1510,7 @@ COMPONENT DiwJaw1 = Slit(
     yheight =1, xwidth= DivSlit1_width)
 AT (0,0, 5*u+length1-(DivSlit1Pos-sample_dist)) RELATIVE EndOfelement_2
 
-COMPONENT elliptical_guide_gravity1_4= Elliptic_guide_gravity(
+COMPONENT elliptical_guide_gravity1_4= Elliptic_guide_gravity_custom(
 l=DivSlit1Pos-DivSlit1Gap/2.0-sample_dist, linxw=Linx1+length1-(DivSlit1Pos-DivSlit1Gap/2.0-sample_dist), 
 linyh=Liny1+length1-(DivSlit1Pos-DivSlit1Gap/2.0-sample_dist), loutxw=Loutx1, loutyh=Louty1,
 xwidth = 2*smallaxis_x1, yheight = 2*smallaxis_y1, dimensionsAt="mid",
@@ -1754,13 +1532,169 @@ AT (0,0, 7*u+length1+DivSlit0Gap/2.0) RELATIVE EndOfelement_2
 
 
 
+
+
+
+
+
+
+
+
+
+/*Stop of scatter logger. Record scatterings in what is between start and stop, that is, parabolic feeder. */
+COMPONENT log_P_stop=Shielding_logger_stop(logger=log_P_start)
+AT (0,0,0) RELATIVE PREVIOUS
+
+
+
+
+
+
+
+/**IIIIIIIIIIIIIIIIIII ITERATOR SECTION. PROCESSING STORED EVENTS  IIIIIIIIIIIIIIII***/
+/* Insert this into McStas instrument file to do the costs evaluation */
+COMPONENT arm_iter_P1_start=Arm()
+AT(0,0,0) RELATIVE ESS_source
+
+COMPONENT iter_P1_start = Shielding_log_iterator_Ni_new()
+AT (0,0,0) RELATIVE ESS_source //ABSOLUTE
+EXTEND
+%{
+#ifdef scatter_iterator_stop
+#undef scatter_iterator_stop
+#endif
+#define scatter_iterator_stop iter_P1_start
+%}
+JUMP arm_iter_P1_stop WHEN(optics_not_hit)
+
+/*Monitoring the tracks stored by the scatter logger*/
+/*Putting dummy arm to register all neutrons to ensure that monitors_nD with shape "previous" will process them */
+COMPONENT arm_iter_P1_dummy=Arm ()
+AT (0,0,0) RELATIVE PREVIOUS
+
+COMPONENT mndP01=Monitor_nD (
+restore_neutron=1,   zmin=25.0,
+zmax=150,
+bins=250, options="previous no slit  z ", filename="NiCapture.dat")
+AT(0,0,0) RELATIVE ESS_source //RELATIVE source
+
+COMPONENT arm_iter_P1_stop=Arm()
+AT (0,0,0) RELATIVE PREVIOUS
+
+COMPONENT iter_P1_stop  = Shielding_log_iterator_stop(iterator=iter_P1_start)
+AT(0,0,0)  RELATIVE ESS_source
+
+/*Moving again to the reference point of iterator start 
+when there are still some tracks stored to perform iterations with,
+checked by the function MC_GETPAR */
+COMPONENT a11i = Arm()
+AT (0,0,0) RELATIVE EndOfelement_1
+JUMP arm_iter_P1_start  WHEN(MC_GETPAR(iter_P1_stop,loop))
+
+/*IIIIIIIIIIIIIIIIIIII  END OF PROCESSING. END OF ITERATOR  SECTION IIIIIIIIIIIIIIIIIIIIIIIIIIIII*/
+
+
+
+
+/**IIIIIIIIIIIIIIIIIII ITERATOR SECTION2. PROCESSING STORED EVENTS  IIIIIIIIIIIIIIII***/
+/* Insert this into McStas instrument file to do the costs evaluation */
+COMPONENT arm_iter_P2_start=Arm()
+AT(0,0,0) RELATIVE ESS_source
+
+COMPONENT iter_P2_start = Shielding_log_iterator_Ti_new()
+AT (0,0,0) RELATIVE ESS_source //ABSOLUTE
+EXTEND
+%{
+#ifdef scatter_iterator_stop
+#undef scatter_iterator_stop
+#endif
+#define scatter_iterator_stop iter_P2_start
+%}
+JUMP arm_iter_P2_stop WHEN(optics_not_hit)
+
+/*Monitoring the tracks stored by the scatter logger*/
+/*Putting dummy arm to register all neutrons to ensure that monitors_nD with shape "previous" will process them */
+COMPONENT arm_iter_P2_dummy=Arm ()
+AT (0,0,0) RELATIVE PREVIOUS
+
+COMPONENT mndP02=Monitor_nD (
+restore_neutron=1,   zmin=25.0,
+zmax=150.0,
+bins=250, options="previous no slit  z ", filename="TiCapture.dat")
+AT(0,0,0) RELATIVE ESS_source //RELATIVE source
+
+COMPONENT arm_iter_P2_stop=Arm()
+AT (0,0,0) RELATIVE PREVIOUS
+
+COMPONENT iter_P2_stop  = Shielding_log_iterator_stop(iterator=iter_P2_start)
+AT(0,0,0)  RELATIVE ESS_source
+
+/*Moving again to the reference point of iterator start 
+when there are still some tracks stored to perform iterations with,
+checked by the function MC_GETPAR */
+COMPONENT a12i = Arm()
+AT (0,0,0) RELATIVE EndOfelement_1 
+JUMP arm_iter_P2_start  WHEN(MC_GETPAR(iter_P2_stop,loop))
+
+/*IIIIIIIIIIIIIIIIIIII  END OF PROCESSING. END OF ITERATOR2  SECTION IIIIIIIIIIIIIIIIIIIIIIIIIIIII*/
+
+/**IIIIIIIIIIIIIIIIIII ITERATOR SECTION3. PROCESSING STORED EVENTS  IIIIIIIIIIIIIIII***/
+/* Insert this into McStas instrument file to do the costs evaluation */
+COMPONENT arm_iter_P3_start=Arm()
+AT(0,0,0) RELATIVE ESS_source
+
+COMPONENT iter_P3_start = Shielding_log_iterator_total()
+AT (0,0,0) RELATIVE ESS_source //ABSOLUTE
+EXTEND
+%{
+#ifdef scatter_iterator_stop
+#undef scatter_iterator_stop
+#endif
+#define scatter_iterator_stop iter_P3_start
+%}
+JUMP arm_iter_P3_stop WHEN(optics_not_hit)
+
+/*Monitoring the tracks stored by the scatter logger*/
+/*Putting dummy arm to register all neutrons to ensure that monitors_nD with shape "previous" will process them */
+COMPONENT arm_iter_P3_dummy=Arm ()
+AT (0,0,0) RELATIVE PREVIOUS
+
+COMPONENT mndP03=Monitor_nD (
+restore_neutron=1,   zmin=25.0,
+zmax=150.0,
+bins=250, options="previous no slit  z ", filename="TotalCapture.dat")
+AT(0,0,0) RELATIVE ESS_source //RELATIVE source
+
+COMPONENT arm_iter_P3_stop=Arm()
+AT (0,0,0) RELATIVE PREVIOUS
+
+COMPONENT iter_P3_stop  = Shielding_log_iterator_stop(iterator=iter_P3_start, last=1)
+AT(0,0,0)  RELATIVE ESS_source
+
+/*Moving again to the reference point of iterator start 
+when there are still some tracks stored to perform iterations with,
+checked by the function MC_GETPAR */
+COMPONENT a13i = Arm()
+AT (0,0,0) RELATIVE EndOfelement_1
+JUMP arm_iter_P3_start  WHEN(MC_GETPAR(iter_P3_stop,loop))
+
+/*IIIIIIIIIIIIIIIIIIII  END OF PROCESSING. END OF ITERATOR3  SECTION IIIIIIIIIIIIIIIIIIIIIIIIIIIII*/
+
+
+
+COMPONENT Beamstop = Beamstop(
+    )
+  AT (0, 0, 0.01) RELATIVE EndOfelement_1
+
+
+
 COMPONENT Lmon_guide_end = L_monitor(
    nL = 300, filename = "Lmon_guide_end", xwidth = 0.027704, restore_neutron=1,
    yheight = 0.027704, Lmin = 0.100000, Lmax = 8.000000)
   AT (0, 0,u) RELATIVE PREVIOUS
 
 /*********************** SAMPLE POSITION **************************/
-
+/*
 COMPONENT Div2d_sample_B = Divergence_monitor(
     nh = 200, nv = 200, filename = "Div2d_sample_B", xwidth = sampleSizeX,
     yheight = sampleSizeY, maxdiv_h = 0.750000, maxdiv_v = 0.750000,restore_neutron=1)
@@ -1777,38 +1711,33 @@ COMPONENT Div2d_sample = Divergence_monitor(
     yheight = sampleSizeY, maxdiv_h = 2.250000, maxdiv_v = 2.250000)
   AT (0, 0,u) RELATIVE PREVIOUS
 
-COMPONENT PSD_sample = PSD_monitor(
-    nx = 200, ny = 200, filename = "PSD_sample", restore_neutron=1,
-    xwidth = 3*sampleSizeX, yheight = 3*sampleSizeY)
+COMPONENT PSD_sample_large = PSD_monitor(
+    nx = 60, ny = 60, filename = "PSD_sample_large", restore_neutron=1,
+    xwidth = 6*sampleSizeX, yheight = 6*sampleSizeY)
+  AT (0, 0,u) RELATIVE PREVIOUS
+
+COMPONENT PSD_sample_small = PSD_monitor(
+    nx = 20, ny = 20, filename = "PSD_sample_small", restore_neutron=1,
+    xwidth = sampleSizeX, yheight = sampleSizeY)
   AT (0, 0,u) RELATIVE PREVIOUS
 
 COMPONENT HPSD_sample = PSDlin_monitor(
     nx = 100, filename="HPSD_sample",xwidth = 4*sampleSizeX, yheight = sampleSizeY, restore_neutron=1)
   AT (0, 0,u) RELATIVE PREVIOUS
 
-COMPONENT VPSD_sample = PSDlin_y_monitor(
-    ny = 100, filename="VPSD_sample",xwidth = sampleSizeX, yheight = 4*sampleSizeY, restore_neutron=1)
-  AT (0, 0,u) RELATIVE PREVIOUS
+
 
 COMPONENT Hdiv_sample = Hdiv_monitor(
     nh = 200, filename = "Hdiv_sample", xwidth = sampleSizeX,
     yheight = sampleSizeY, h_maxdiv = 2.250000, restore_neutron=1)
   AT (0, 0,u) RELATIVE PREVIOUS
 
-COMPONENT Vdiv_sample = Vdiv_monitor(
-    nv = 200, filename = "Vdiv_sample", xwidth = sampleSizeX, restore_neutron=1,
-    yheight = sampleSizeY, v_maxdiv = 2.250000)
-  AT (0, 0,u) RELATIVE PREVIOUS
 
 COMPONENT acceptance_x_divx = DivPos_monitor(
    nh = 200, ndiv = 200, filename = "acceptance_x_divx",
    xwidth = 2*sampleSizeX, yheight = sampleSizeY, maxdiv_h = 1.500000, restore_neutron=1)
  AT (0, 0, u) RELATIVE PREVIOUS
 
-COMPONENT acceptance_y_divy = DivPos_y_monitor(
-   npos = 200, ndiv = 200, filename = "acceptance_y_divy",
-   xwidth = sampleSizeX, yheight = 2*sampleSizeY, maxdiv = 1.500000, restore_neutron=1)
- AT (0, 0, u) RELATIVE PREVIOUS
 
 COMPONENT Lmon_sample_B = L_monitor(
     nL = 300, filename = "Lmon_sample_B", xwidth = 0.010000, restore_neutron=1,
@@ -1830,90 +1759,70 @@ COMPONENT HPSD_sample_maxdiv = PSDlin_monitor(
   WHEN (x_div<0.750000 && x_div>-0.750000 && y_div<0.750000 && y_div>-0.750000)
   AT (0, 0,u) RELATIVE PREVIOUS
 
-COMPONENT VPSD_sample_maxdiv = PSDlin_y_monitor(
-    ny = 100, filename="VPSD_sample_maxdiv",xwidth = sampleSizeX, yheight = 4*sampleSizeY, restore_neutron=1)
-  WHEN (x_div<0.750000 && x_div>-0.750000 && y_div<0.750000 && y_div>-0.750000)
-  AT (0, 0,u) RELATIVE PREVIOUS
 
 COMPONENT Hdiv_sample_maxdiv = Hdiv_monitor(
     nh = 200, filename = "Hdiv_sample_maxdiv", xwidth = sampleSizeX, restore_neutron=1,
     yheight = sampleSizeY, h_maxdiv = 2.250000) WHEN (y_div<0.750000 && y_div>-0.750000)
   AT (0, 0,u) RELATIVE PREVIOUS
 
-COMPONENT Vdiv_sample_maxdiv = Vdiv_monitor(
-    nv = 200, filename = "Vdiv_sample_maxdiv", xwidth = sampleSizeX, restore_neutron=1,
-    yheight = sampleSizeY, v_maxdiv = 2.250000) WHEN (x_div<0.750000 && x_div>-0.750000)
-  AT (0, 0,u) RELATIVE PREVIOUS
 
 COMPONENT acceptance_x_divx_maxdiv = DivPos_monitor(
    nh = 200, ndiv = 200, filename = "acceptance_x_divx_maxdiv", restore_neutron=1,
    xwidth = 2*sampleSizeX, yheight = sampleSizeY, maxdiv_h = 1.500000) WHEN (y_div<0.750000 && y_div>-0.750000)
  AT (0, 0, u) RELATIVE PREVIOUS
 
-COMPONENT acceptance_y_divy_maxdiv = DivPos_y_monitor(
-   npos = 200, ndiv = 200, filename = "acceptance_y_divy_maxdiv", restore_neutron=1,
-   xwidth = sampleSizeX, yheight = 2*sampleSizeY, maxdiv = 1.500000) WHEN (x_div<0.750000 && x_div>-0.750000)
- AT (0, 0, u) RELATIVE PREVIOUS
 
+ COMPONENT ToFatSample = TOF_monitor(
+    nt = 2000, filename = "ToFatSample.dat",restore_neutron=1, xwidth = 0.1,
+    yheight = 0.1, tmax = 5.5*72.0*1e6/v_0)
+  AT (0, 0, u) RELATIVE  PREVIOUS
+  
 COMPONENT Lmon_sample = L_monitor(
     nL = 400, filename = "Lmon_sample", xwidth = sampleSizeX, restore_neutron=1,
     yheight = sampleSizeY, Lmin = 2, Lmax = 6)
   AT (0, 0,u) RELATIVE PREVIOUS
-
-  COMPONENT Elowest = E_monitor(filename="E_lowest", xwidth =0.01, restore_neutron=1,
-			     yheight=0.01, Emin=0, Emax=0.5, nE=51)
- AT (0,0,0) RELATIVE PREVIOUS
   
-  COMPONENT Elow = E_monitor(filename="E_low", xwidth =0.01, restore_neutron=1,
-			     yheight=0.01, Emin=0, Emax=100, nE=101)
- AT (0,0,0) RELATIVE PREVIOUS
 
-COMPONENT Ehigh = E_monitor(filename="E_high", xwidth = 0.01, restore_neutron=1,
-			     yheight = 0.01,Emin=100, Emax=100000, nE=96)
+  
+  COMPONENT L_monSampleZoomout = L_monitor(
+    nL = 1000, filename = "L_monsampleZoomOut.dat",restore_neutron=1, xwidth = 0.2,
+    yheight = 0.2, Lmin = lambda_0/2.0, Lmax = 200)
+  AT (0, 0, u) RELATIVE PREVIOUS
+*/
+
+
+/**************** 
+The component SCalc will calculate thicknesses of materials required to reach MaxRate=1 uSv/hr at the shielding surface.
+The source is assumed in the center of 50 cm wide channel inside the shielding.
+The output will not be plotted, but can be found in the file "Shielding.dat" in the output folder.
+Binning in the files for Ni, Ti and Total capture should match.
+****************/
+COMPONENT SCalc=Shielding_calculator(MaxRate=1.0,Innerspace=0.5, NiCaptureFile="NiCapture.dat",TiCaptureFile="TiCapture.dat",TotalCaptureFile="TotalCapture.dat", OutputFile="Shielding.dat")
 AT (0,0,0) RELATIVE PREVIOUS
-  
-  /* Simple curved guide : 
-  
-COMPONENT GuideR = Guide_curved(
-    w1 = 0.1, h1 = 0.1, l = 50, curvature=3000)
-  AT (0,0,0.001) RELATIVE PREVIOUS
 
-  COMPONENT RArm=Arm()
-  AT (0.416657,0,50.002) RELATIVE GuideR
-  ROTATED (0, calcAlpha(50,3000),0) RELATIVE GuideR
-  
-  COMPONENT RArm2=Arm()
-  AT (calcX(50, 3000),0,calcZ(50, 3000)) RELATIVE GuideR
-  ROTATED (0, calcAlpha(50,3000),0) RELATIVE GuideR
-  
-COMPONENT Monitor2_xy1 = Monitor_nD(
-    options = "x limits=[-0.06 0.06] bins=51, y limits=[-0.06 0.06] bins=51,", xwidth = 0.12, yheight = 0.12)
-    AT (0, 0, 0.05) RELATIVE RArm */
+/*Calculating dose rates at the surface of lateral shielding along the guide.*/
+/*Inner space in the shielding is assumed 40 cm wide, the guide is in the middle of the shielding housing.*/
+/*20 cm thick iron shielding*/
+COMPONENT DoseFe=Dose_calculator(Innerspace=0.4, Thickness=0.2, Material="Fe",  NiCaptureFile="NiCapture.dat",TiCaptureFile="TiCapture.dat",TotalCaptureFile="TotalCapture.dat", OutputFile="DoseFe.dat")
+AT (0,0,0) RELATIVE PREVIOUS
 
-COMPONENT E0_100meV = Monitor_nD(xwidth=0.1, yheight=0.1, options="per cm2 Energy limits=[0 100] bins=101", restore_neutron=1)
- AT (0, 0, 0.001) RELATIVE PREVIOUS
+/*60 cm thick concrete shielding*/
+COMPONENT DoseConc=Dose_calculator(Innerspace=0.4, Thickness=0.6, Material="Concrete", NiCaptureFile="NiCapture.dat",TiCaptureFile="TiCapture.dat",TotalCaptureFile="TotalCapture.dat", OutputFile="DoseConc.dat")
+AT (0,0,0) RELATIVE PREVIOUS
 
+/*10 cm steel followed by 40 cm concrete shielding*/
+COMPONENT DoseStandard=Dose_calculator(Innerspace=0.4, Thickness=0.4, Material="Concrete", SteelTubing="yes", TubingThickness=0.1,  NiCaptureFile="NiCapture.dat",TiCaptureFile="TiCapture.dat",TotalCaptureFile="TotalCapture.dat", OutputFile="DoseConcTubing.dat")
+AT (0,0,0) RELATIVE PREVIOUS
 
-/* /\* Uncomment these helper-arms to view "full" monolith *\/ */
-
-COMPONENT DummyArm1 = Arm()
-  AT (6,0,6) ABSOLUTE
-
-COMPONENT DummyArm2 = Arm()
-  AT (-6,0,6) ABSOLUTE
-
-COMPONENT DummyArm3 = Arm()
-  AT (-6,0,-6) ABSOLUTE
-
-COMPONENT DummyArm4 = Arm()
-  AT (6,0,-6) ABSOLUTE
-
-COMPONENT DummyArm5 = Arm()
-  AT (6,0,6) ABSOLUTE
+/*5 cm steel followed by 40 cm concrete shielding*/
+COMPONENT Dose5=Dose_calculator(Innerspace=0.4, Thickness=0.6, Material="Concrete", SteelTubing="yes", TubingThickness=0.05,  NiCaptureFile="NiCapture.dat",TiCaptureFile="TiCapture.dat",TotalCaptureFile="TotalCapture.dat", OutputFile="DoseConcTubing5.dat")
+AT (0,0,0) RELATIVE PREVIOUS
 
 
 FINALLY
 %{
 %}
-
 END
+
+
+
