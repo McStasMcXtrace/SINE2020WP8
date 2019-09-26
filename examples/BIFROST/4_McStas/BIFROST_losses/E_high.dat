@@ -1,0 +1,172 @@
+# Format: McCode with text headers
+# URL: http://www.mccode.org
+# Creator: McStas 2.5 - Dec. 12, 2018
+# Instrument: BIFROST_losses.instr
+# Ncount: 174450495
+# Trace: no
+# Gravitation: no
+# Seed: 1560250153
+# Directory: BIFROST_losses_20190611_114821
+# Nodes: 8
+# Param: MCPL=1
+# Param: CHOPPERS=0
+# Param: sector=W
+# Param: beamline=3
+# Param: Lmin=0.2
+# Param: Lmax=20
+# Param: c_performance=1
+# Param: t_performance=1
+# Param: index=8
+# Param: dist=0
+# Param: cold=1
+# Param: Yheight=0.03
+# Param: delta=0
+# Param: thres=0.003
+# Param: filter=0
+# Param: repeat=1
+# Param: E_smear=0.1
+# Param: pos_smear=0.01
+# Param: dir_smear=0.01
+# Param: WaveMin=0.1
+# Param: WaveMax=99.5
+# Param: pin_holeY=0.088
+# Param: pin_holeX=0.03
+# Param: E_0=4
+# Param: L_0=0
+# Param: chopPulseOpening=0.004
+# Param: chopPulseFrequencyOrder=8
+# Param: sampleSizeX=0.01
+# Param: sampleSizeY=0.01
+# Param: chopBWPos=78
+# Param: DivSlit0_width=0.1
+# Param: DivSlit1_width=0.1
+# Param: DivSlit2_width=0.1
+# Param: DivSlit3_width=0.1
+# Param: BWopen=172.33
+# Param: FOCopen1=37.79
+# Param: FOCopen2=51.63
+# Param: Npulse=1
+# Param: PscOff=0.0306
+# Param: discD=0.04
+# Param: monigap_length=0.02
+# Param: print=0
+# Param: makeVirtualSource=0
+# Param: printMValues=0
+# Param: ROT=0
+# Param: TX=0
+# Param: TY=0
+# Param: TZ=0
+# Param: Center=0
+# Date: Tue Jun 11 11:57:28 2019 (1560247048)
+# type: array_1d(96)
+# Source: BIFROST_MCPL (BIFROST_losses.instr)
+# component: Ehigh
+# position: 120.575 0 108.352
+# title: Energy monitor
+# Ncount: 1395603960
+# filename: E_high.dat
+# statistics: X0=622.481; dX=57.7779;
+# signal: Min=0; Max=3.61822e+08; Mean=3.77508e+06;
+# values: 3.62408e+08 4.06719e+07 12330
+# xvar: E
+# yvar: (I,I_err)
+# xlabel: Energy [meV]
+# ylabel: Intensity
+# xlimits: 100 100000
+# variables: E I I_err N
+620.3125 361821921.3 40669887.29 12283 
+1660.9375 422932.2639 373299.8787 34 
+2701.5625 159743.3315 172150.4894 6 
+3742.1875 4.043283288 3.267876341 4 
+4782.8125 1796.644923 1796.644923 1 
+5823.4375 1123.573501 1376.090178 2 
+6864.0625 0 0 0 
+7904.6875 0 0 0 
+8945.3125 0 0 0 
+9985.9375 0 0 0 
+11026.5625 0 0 0 
+12067.1875 0 0 0 
+13107.8125 0 0 0 
+14148.4375 0 0 0 
+15189.0625 0 0 0 
+16229.6875 0 0 0 
+17270.3125 0 0 0 
+18310.9375 0 0 0 
+19351.5625 0 0 0 
+20392.1875 0 0 0 
+21432.8125 0 0 0 
+22473.4375 0 0 0 
+23514.0625 0 0 0 
+24554.6875 0 0 0 
+25595.3125 0 0 0 
+26635.9375 0 0 0 
+27676.5625 0 0 0 
+28717.1875 0 0 0 
+29757.8125 0 0 0 
+30798.4375 0 0 0 
+31839.0625 0 0 0 
+32879.6875 0 0 0 
+33920.3125 0 0 0 
+34960.9375 0 0 0 
+36001.5625 0 0 0 
+37042.1875 0 0 0 
+38082.8125 0 0 0 
+39123.4375 0 0 0 
+40164.0625 0 0 0 
+41204.6875 0 0 0 
+42245.3125 0 0 0 
+43285.9375 0 0 0 
+44326.5625 0 0 0 
+45367.1875 0 0 0 
+46407.8125 0 0 0 
+47448.4375 0 0 0 
+48489.0625 0 0 0 
+49529.6875 0 0 0 
+50570.3125 0 0 0 
+51610.9375 0 0 0 
+52651.5625 0 0 0 
+53692.1875 0 0 0 
+54732.8125 0 0 0 
+55773.4375 0 0 0 
+56814.0625 0 0 0 
+57854.6875 0 0 0 
+58895.3125 0 0 0 
+59935.9375 0 0 0 
+60976.5625 0 0 0 
+62017.1875 0 0 0 
+63057.8125 0 0 0 
+64098.4375 0 0 0 
+65139.0625 0 0 0 
+66179.6875 0 0 0 
+67220.3125 0 0 0 
+68260.9375 0 0 0 
+69301.5625 0 0 0 
+70342.1875 0 0 0 
+71382.8125 0 0 0 
+72423.4375 0 0 0 
+73464.0625 0 0 0 
+74504.6875 0 0 0 
+75545.3125 0 0 0 
+76585.9375 0 0 0 
+77626.5625 0 0 0 
+78667.1875 0 0 0 
+79707.8125 0 0 0 
+80748.4375 0 0 0 
+81789.0625 0 0 0 
+82829.6875 0 0 0 
+83870.3125 0 0 0 
+84910.9375 0 0 0 
+85951.5625 0 0 0 
+86992.1875 0 0 0 
+88032.8125 0 0 0 
+89073.4375 0 0 0 
+90114.0625 0 0 0 
+91154.6875 0 0 0 
+92195.3125 0 0 0 
+93235.9375 0 0 0 
+94276.5625 0 0 0 
+95317.1875 0 0 0 
+96357.8125 0 0 0 
+97398.4375 0 0 0 
+98439.0625 0 0 0 
+99479.6875 0 0 0 
