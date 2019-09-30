@@ -1,14 +1,25 @@
 **mcpl:**
 
-submodule corresponding to the repository at https://github.com/mctools/mcpl.
+Please refer to the repository at https://github.com/mctools/mcpl/
 
 **comblayer:**
 
-submodule corresponding to the repositroy https://github.com/SAnsell/CombLayer/
+Please refer to the repository at https://github.com/SAnsell/CombLayer/
 
-Please use the commands
-  ```bash
-  git submodule init
-  git submodule foreach git pull origin master
-  ```
-  to fetch these files to a local repository
+**McStas**
+Please refer to the repository at
+https://github.com/McStasMcXtrace/McCode/ and website at http://www.mcstas.org
+
+**RESTRAX/SIMRES**
+Please refer to http://omega.ujf.cas.cz/restrax/
+
+**VITESS**
+Please refer to http://www.hmi.de/projects/ess/vitess
+
+**Geant4**
+Please refer to http://cern.ch/geant4/ 
+
+**MCNP**
+Please refer to https://mcnp.lanl.gov
+
+
