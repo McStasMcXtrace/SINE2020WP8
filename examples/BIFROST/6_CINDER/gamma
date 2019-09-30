@@ -1,0 +1,6 @@
+run_options
+   time_step 1
+
+files
+   mcnpx_outp for_dose2.o
+   csize csize
