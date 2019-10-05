@@ -1,9 +1,7 @@
 **mcpl:**
-
 Please refer to the repository at https://github.com/mctools/mcpl/
 
 **comblayer:**
-
 Please refer to the repository at https://github.com/SAnsell/CombLayer/
 
 **McStas**
