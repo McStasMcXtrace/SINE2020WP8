@@ -7,4 +7,4 @@
 * A. Kusmin et. Al.  NIM A  856 (2017) 119–132 http://dx.doi.org/10.1016/j.nima.2016.12.013
 
 ## Publications by non-WP8 participants, but topically related ##
-* R. Kolevatov et. Al. https://doi.org/10.1016/j.nima.2018.12.069 (also https://arxiv.org/abs/1708.04486) and forthcoming publication in JNR
+* R. Kolevatov et. Al. NIM A 992, (2010) pp 98-107, https://doi.org/10.1016/j.nima.2018.12.069 (also https://arxiv.org/abs/1708.04486) and forthcoming publication in JNR
